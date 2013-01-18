@@ -56,6 +56,22 @@ public class SpriteMaster {
         return modelUniform;
     }
     
+    public Bunker[] getBunkers() {
+    	return bunkers;
+    }
+    
+    public Enemy[] getEnemies() {
+    	return enemies;
+    }
+    
+    public Player getPlayer() {
+    	return player;
+    }
+    
+    public Projectile[] getProjectiles() {
+    	return projectiles.toArray(new Projectile[projectiles.size()]);
+    }
+    
     public int loadTexture(GLAutoDrawable drawable, String filename) {
         return textureMaster.loadTexturePng(drawable, filename);
     }
@@ -141,19 +157,19 @@ public class SpriteMaster {
     // ++++ ++++ Game Logic ++++ ++++
     
     public void update(long elapsedTime) {
-        //for (Bunker b : bunkers) {
-            //b.update(elapsedTime);
-        //}
-        //for (Enemy e : enemies) {
-            //e.update(elapsedTime);
-        //}
+        for (Bunker b : bunkers) {
+            b.update(elapsedTime);
+        }
+        for (Enemy e : enemies) {
+            e.update(elapsedTime);
+        }
         player.update(elapsedTime);
-        //for (Projectile p : projectiles) {
-            //p.update(elapsedTime);
-        //}
-        //for (Effect e : effects) {
-            //e.update(elapsedTime);
-        //}
+        for (Projectile p : projectiles) {
+            p.update(elapsedTime);
+        }
+        for (Effect e : effects) {
+            e.update(elapsedTime);
+        }
     }
     
     // ++++ ++++ Rendering ++++ ++++
@@ -164,19 +180,19 @@ public class SpriteMaster {
         gl.glBindVertexArray(vao);
         gl.glUseProgram(shaderProgram);
 
-        //for (Bunker b : bunkers) {
-            //b.draw(drawable);
-        //}
-        //for (Enemy e : enemies) {
-            //e.draw(drawable);
-        //}
+        for (Bunker b : bunkers) {
+            b.draw(drawable);
+        }
+        for (Enemy e : enemies) {
+            e.draw(drawable);
+        }
         player.draw(drawable);
-        //for (Projectile p : projectiles) {
-            //p.draw(drawable);
-        //}
-        //for (Effect e : effects) {
-            //e.draw(drawable);
-        //}
+        for (Projectile p : projectiles) {
+            p.draw(drawable);
+        }
+        for (Effect e : effects) {
+            e.draw(drawable);
+        }
         
         gl.glBindVertexArray(0);
         gl.glUseProgram(0);

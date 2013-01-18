@@ -8,6 +8,6 @@ public interface Collideable {
     
     public boolean collidesWith(Collideable other);
     
-    public Vector2f getCollisionSize();
+    public Vector2f getScale();
     public Vector2f getLocation();
 }

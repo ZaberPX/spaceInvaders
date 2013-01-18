@@ -24,15 +24,13 @@ public class Bunker extends Sprite implements Collideable {
     }
     
     @Override
-    public Vector2f getCollisionSize() {
-        // TODO Auto-generated method stub
-        return null;
+    public Vector2f getScale() {
+        return scale;
     }
     
     @Override
     public Vector2f getLocation() {
-        // TODO Auto-generated method stub
-        return null;
+        return location;
     }
     
 }

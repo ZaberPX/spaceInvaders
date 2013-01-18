@@ -23,7 +23,8 @@ public class Sprite {
     
     //Rendering
     protected int texture;
-    protected Matrix4f scale;
+    protected Vector2f scale;
+    protected Matrix4f scaleMatrix;
     protected int modelUniform;
     protected float depth;
     protected int depthUniform;
@@ -34,7 +35,8 @@ public class Sprite {
             String texture, Vector2f scale, float depth) {
         this.master = master;
         this.texture = master.loadTexture(drawable, texture);
-        this.scale = Matrix4f.scale(new Vector3f(scale.x, scale.y, 1.0f), 
+        this.scale = scale;
+        scaleMatrix = Matrix4f.scale(new Vector3f(scale.x, scale.y, 1.0f), 
                 new Matrix4f(), null);
         this.location = new Vector2f();
         this.modelUniform = master.getModelUniform();
@@ -44,7 +46,11 @@ public class Sprite {
     
     // ++++ ++++ Game Logic ++++ ++++
     
+    /**
+     * @param elapsedTime Number of milliseconds elapsed since last update cycle. */
     public void update(long elapsedTime) {
+    	/*TODO Idea: reorganize Sprites to have current and last location, render based on
+    	 * "current" location edited during the game loop.*/
         location = Vector2f.add((Vector2f) displacement.scale((float)elapsedTime / 1000f), 
                 location, null);
     }
@@ -59,7 +65,7 @@ public class Sprite {
         gl.glUniform1f(depthUniform, depth);
         //Setup matrix
         Matrix4f trans = Matrix4f.translate(location, new Matrix4f(), null);
-        Matrix4f model = Matrix4f.mul(trans, scale, null);
+        Matrix4f model = Matrix4f.mul(trans, scaleMatrix, null);
         FloatBuffer buffer = FloatBuffer.allocate(16);
         model.store(buffer);
         buffer.rewind();

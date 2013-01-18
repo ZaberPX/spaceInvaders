@@ -51,8 +51,8 @@ public class Renderer implements GLEventListener {
     
     @Override
     public void dispose(GLAutoDrawable drawable) {
-        
         splash.dispose(drawable);
+    	spriteMaster.dispose(drawable);
     }
     
     @Override
@@ -63,6 +63,8 @@ public class Renderer implements GLEventListener {
         
         splash.draw(drawable);
         
+        spriteMaster.draw(drawable);
+        
         long time = System.currentTimeMillis();
         long elapsedTime = time - lastTime;
         
@@ -70,8 +72,6 @@ public class Renderer implements GLEventListener {
         InputMaster.getInstance().update();
         
         lastTime = time;
-        
-        spriteMaster.draw(drawable);
     }
     
     @Override
