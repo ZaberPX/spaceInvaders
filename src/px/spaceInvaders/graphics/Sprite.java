@@ -23,6 +23,8 @@ public class Sprite {
     
     //Rendering
     protected int texture;
+    protected Vector2f offset;
+    /**Size of the sprite in world coordinates (typically pixels) */
     protected Vector2f scale;
     protected Matrix4f scaleMatrix;
     protected int modelUniform;
@@ -48,10 +50,11 @@ public class Sprite {
     
     /**
      * @param elapsedTime Number of milliseconds elapsed since last update cycle. */
-    public void update(long elapsedTime) {
+    public void update(GLAutoDrawable drawable, long elapsedTime) {
     	/*TODO Idea: reorganize Sprites to have current and last location, render based on
     	 * "current" location edited during the game loop.*/
-        location = Vector2f.add((Vector2f) displacement.scale((float)elapsedTime / 1000f), 
+        location = Vector2f.add((Vector2f) 
+                new Vector2f(displacement).scale((float)elapsedTime / 1000f), 
                 location, null);
     }
     
@@ -63,9 +66,19 @@ public class Sprite {
         
         gl.glBindTexture(GL4.GL_TEXTURE_2D, texture);
         gl.glUniform1f(depthUniform, depth);
-        //Setup matrix
-        Matrix4f trans = Matrix4f.translate(location, new Matrix4f(), null);
-        Matrix4f model = Matrix4f.mul(trans, scaleMatrix, null);
+        
+        //Setup Model matrix
+        //Scale
+        Matrix4f model = Matrix4f.mul(scaleMatrix, new Matrix4f(), null);
+        //Offset
+        if (offset != null) {
+            Matrix4f off = Matrix4f.translate(offset, new Matrix4f(), null);
+            model = Matrix4f.mul(off, model, null);
+        }
+        //Location
+        Matrix4f loc = Matrix4f.translate(location, new Matrix4f(), null);
+        model = Matrix4f.mul(loc, model, null);
+        
         FloatBuffer buffer = FloatBuffer.allocate(16);
         model.store(buffer);
         buffer.rewind();

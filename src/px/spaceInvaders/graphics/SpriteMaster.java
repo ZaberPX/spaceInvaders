@@ -26,9 +26,12 @@ public class SpriteMaster {
     private TextureMaster textureMaster;
     private Player player;
     private Bunker[] bunkers;
-    private Enemy[] enemies;
+    private LinkedList<Enemy> enemies;
+    private LinkedList<Enemy> enemiesDisposal;
     private LinkedList<Effect> effects;
+    private LinkedList<Effect> effectsDisposal;
     private LinkedList<Projectile> projectiles;
+    private LinkedList<Projectile> projectilesDisposal;
     
     private int shaderProgram;
     
@@ -55,12 +58,16 @@ public class SpriteMaster {
     public int getModelUniform() {
         return modelUniform;
     }
+
+    public Matrix4f getView() {
+        return view;
+    }
     
     public Bunker[] getBunkers() {
     	return bunkers;
     }
     
-    public Enemy[] getEnemies() {
+    public LinkedList<Enemy> getEnemies() {
     	return enemies;
     }
     
@@ -68,8 +75,12 @@ public class SpriteMaster {
     	return player;
     }
     
-    public Projectile[] getProjectiles() {
-    	return projectiles.toArray(new Projectile[projectiles.size()]);
+    public LinkedList<Projectile> getProjectiles() {
+    	return projectiles;
+    }
+    
+    public LinkedList<Effect> getEffects() {
+        return effects;
     }
     
     public int loadTexture(GLAutoDrawable drawable, String filename) {
@@ -79,6 +90,9 @@ public class SpriteMaster {
     // ++++ ++++ Initialization ++++ ++++
     
     public SpriteMaster(GLAutoDrawable drawable) {
+        
+        // OpenGL Initialization
+        
         GL4 gl = drawable.getGL().getGL4();
         int[] temp = new int[1];
         textureMaster = new TextureMaster();
@@ -107,10 +121,10 @@ public class SpriteMaster {
         //Setup VBO
         float[] vertices = {
                 //Position         //Texcoord
-                -1.0f, 1.0f, 0.0f, 0.0f, //Top Left
-                -1.0f,-1.0f, 0.0f, 1.0f, //Bottom Left
-                 1.0f, 1.0f, 1.0f, 0.0f, //Top Right
-                 1.0f,-1.0f, 1.0f, 1.0f //Bottom Right
+                -0.5f, 0.5f, 0.0f, 0.0f, //Top Left
+                -0.5f,-0.5f, 0.0f, 1.0f, //Bottom Left
+                 0.5f, 0.5f, 1.0f, 0.0f, //Top Right
+                 0.5f,-0.5f, 1.0f, 1.0f //Bottom Right
         };
         gl.glGenBuffers(1, temp, 0);
         vbo = temp[0];
@@ -132,14 +146,20 @@ public class SpriteMaster {
         gl.glEnableVertexAttribArray(texcoordAttribute);
         gl.glVertexAttribPointer(texcoordAttribute, 2, GL4.GL_FLOAT, false, 4 * 4, 2 * 4);
         
-        //TODO Remove test Sprite and Texture
-        player = new Player(drawable, this, "res/textures/PlayerTank.png", 
-                new Vector2f(32f, 32f), 0.5f);
-        
         //Unbind Everything
         gl.glBindVertexArray(0);
         gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, 0);
         gl.glUseProgram(0);
+        
+        // Game State Initialization
+        
+        player = new Player(drawable, this, "res/textures/PlayerTank.png", 
+                new Vector2f(64f, 64f), 0.5f);
+        bunkers = new Bunker[4];
+        //TODO init bunkers 0-3
+        enemies = new LinkedList<Enemy>();
+        effects = new LinkedList<Effect>();
+        projectiles = new LinkedList<Projectile>();
     }
     
     // ++++ ++++ Disposal ++++ ++++
@@ -154,24 +174,6 @@ public class SpriteMaster {
         gl.glDeleteBuffers(1, temp, 0);
     }
     
-    // ++++ ++++ Game Logic ++++ ++++
-    
-    public void update(long elapsedTime) {
-        for (Bunker b : bunkers) {
-            b.update(elapsedTime);
-        }
-        for (Enemy e : enemies) {
-            e.update(elapsedTime);
-        }
-        player.update(elapsedTime);
-        for (Projectile p : projectiles) {
-            p.update(elapsedTime);
-        }
-        for (Effect e : effects) {
-            e.update(elapsedTime);
-        }
-    }
-    
     // ++++ ++++ Rendering ++++ ++++
     
     public void draw(GLAutoDrawable drawable) {
@@ -180,9 +182,9 @@ public class SpriteMaster {
         gl.glBindVertexArray(vao);
         gl.glUseProgram(shaderProgram);
 
-        for (Bunker b : bunkers) {
-            b.draw(drawable);
-        }
+//        for (Bunker b : bunkers) {
+//            b.draw(drawable);
+//        }
         for (Enemy e : enemies) {
             e.draw(drawable);
         }
@@ -196,5 +198,43 @@ public class SpriteMaster {
         
         gl.glBindVertexArray(0);
         gl.glUseProgram(0);
+    }
+    
+    // ++++ ++++ Game Logic ++++ ++++
+    
+    public void update(GLAutoDrawable drawable, long elapsedTime) {
+        enemiesDisposal = new LinkedList<Enemy>();
+        effectsDisposal = new LinkedList<Effect>();
+        projectilesDisposal = new LinkedList<Projectile>();
+        
+        //Update game state
+//        for (Bunker b : bunkers) {
+//            b.update(drawable, elapsedTime);
+//        }
+        for (Enemy e : enemies) {
+            e.update(drawable, elapsedTime);
+        }
+        player.update(drawable, elapsedTime);
+        for (Projectile p : projectiles) {
+            p.update(drawable, elapsedTime);
+            if (p.getLifetime() <= 0) {
+                projectilesDisposal.add(p);
+            }
+            
+        }
+        for (Effect e : effects) {
+            e.update(drawable, elapsedTime);
+        }
+        
+        //Dispose of dead objects
+        for (Enemy e : enemiesDisposal) {
+            enemies.remove(e);
+        }
+        for (Effect e : effectsDisposal) {
+            effects.remove(e);
+        }
+        for (Projectile p : projectilesDisposal) {
+            projectiles.remove(p);
+        }
     }
 }

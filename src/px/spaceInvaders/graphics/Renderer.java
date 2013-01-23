@@ -68,7 +68,7 @@ public class Renderer implements GLEventListener {
         long time = System.currentTimeMillis();
         long elapsedTime = time - lastTime;
         
-        spriteMaster.update(elapsedTime);
+        spriteMaster.update(drawable, elapsedTime);
         InputMaster.getInstance().update();
         
         lastTime = time;
