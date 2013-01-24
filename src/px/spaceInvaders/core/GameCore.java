@@ -2,8 +2,6 @@ package px.spaceInvaders.core;
 
 import javax.media.opengl.awt.GLCanvas;
 
-import px.util.FrameControl;
-
 /**TODO Class Description and all Methods
  * @author Michael Stopa */
 public class GameCore {

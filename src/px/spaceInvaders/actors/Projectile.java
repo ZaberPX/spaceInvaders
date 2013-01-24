@@ -80,7 +80,7 @@ public class Projectile extends Sprite {
     
     /**TODO: removes this projectile and spawns an explosion. */
     public void detonate() {
-        System.out.println("Hit on Enemy");
+        //System.out.println("Hit on Enemy");
         //TODO: Spawn an explosion effect to actually deal the damage.
     }
 }

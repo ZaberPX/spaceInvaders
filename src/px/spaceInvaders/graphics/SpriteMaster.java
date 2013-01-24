@@ -2,6 +2,7 @@ package px.spaceInvaders.graphics;
 
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
+import java.util.Random;
 
 import javax.media.opengl.GL4;
 import javax.media.opengl.GLAutoDrawable;
@@ -15,7 +16,6 @@ import px.spaceInvaders.actors.Effect;
 import px.spaceInvaders.actors.Enemy;
 import px.spaceInvaders.actors.Player;
 import px.spaceInvaders.actors.Projectile;
-import px.util.graphics.ShaderLoader;
 
 /**TODO Class Description and all Methods
  * @author Michael Stopa */
@@ -24,6 +24,7 @@ public class SpriteMaster {
     // ++++ ++++ Data ++++ ++++
     
     //Game data
+    public static Random random;
     private int waves;
     private int score;
     private TextureMaster textureMaster;
@@ -100,6 +101,10 @@ public class SpriteMaster {
     // ++++ ++++ Initialization ++++ ++++
     
     public SpriteMaster(GLAutoDrawable drawable) {
+        
+        if (random == null) {
+            random = new Random();
+        }
         
         // OpenGL Initialization
         
@@ -180,22 +185,29 @@ public class SpriteMaster {
         spawnWave(drawable);
     }
     
-    public void addScore(int points) {
-        score += points;
-    }
-    
     public void spawnWave(GLAutoDrawable drawable) {
-        enemies.add(new Enemy(drawable, this, "res/textures/EnemyBomber.png", 
-                new Vector2f(240f, 512f), new Vector2f(50f, 50f), 
-                new Vector2f(64f, 64f), 0.5f, 100 + waves));
-        enemies.add(new Enemy(drawable, this, "res/textures/EnemyFighter.png", 
-                new Vector2f(480f, 512f), new Vector2f(50f, 50f), 
-                new Vector2f(64f, 64f), 0.5f, 100 + waves));
-        enemies.add(new Enemy(drawable, this, "res/textures/EnemyGunship.png", 
-                new Vector2f(720f, 512f), new Vector2f(50f, 50f), 
-                new Vector2f(64f, 64f), 0.5f, 100 + waves));
+        for (int i = 0; i < 10; i++) {
+            int result = random.nextInt(4);
+            switch (result) {
+            case 0:
+                enemies.add(new Enemy(drawable, this, "res/textures/EnemyBomber.png", 
+                        new Vector2f(32f + 64f * i, 512f), new Vector2f(50f, 50f), 
+                        new Vector2f(64f, 64f), 0.5f, 100 + waves));
+                break;
+            case 1:
+                enemies.add(new Enemy(drawable, this, "res/textures/EnemyFighter.png", 
+                        new Vector2f(32f + 64f * i, 512f), new Vector2f(50f, 50f), 
+                        new Vector2f(64f, 64f), 0.5f, 100 + waves));
+                break;
+            case 2:
+                enemies.add(new Enemy(drawable, this, "res/textures/EnemyGunship.png", 
+                        new Vector2f(32f + 64f * i, 512f), new Vector2f(50f, 50f), 
+                        new Vector2f(64f, 64f), 0.5f, 100 + waves));
+                break;
+            }
+        }
         waves++;
-        addScore(1);
+        score++;
     }
     
     // ++++ ++++ Disposal ++++ ++++
@@ -272,7 +284,7 @@ public class SpriteMaster {
         //Dispose of dead objects
         for (Enemy e : enemiesDisposal) {
             enemies.remove(e);
-            addScore(1);
+            score++;
         }
         for (Effect e : effectsDisposal) {
             effects.remove(e);

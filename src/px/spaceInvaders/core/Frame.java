@@ -9,7 +9,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import px.spaceInvaders.graphics.Renderer;
-import px.util.input.InputMaster;
 
 import com.jogamp.opengl.util.FPSAnimator;
 

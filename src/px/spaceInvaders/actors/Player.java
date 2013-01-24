@@ -6,8 +6,8 @@ import javax.media.opengl.GLAutoDrawable;
 
 import org.lwjgl.util.vector.Vector2f;
 
+import px.spaceInvaders.core.InputMaster;
 import px.spaceInvaders.graphics.SpriteMaster;
-import px.util.input.InputMaster;
 
 /**TODO Class Description and all Methods
  * @author Michael Stopa */
@@ -50,7 +50,11 @@ public class Player extends Pawn {
         if (in.isKeyDown(KeyEvent.VK_SPACE)) {
             shoot(drawable);
         }
-        if (in.isKeyDown(KeyEvent.VK_W) || in.isKeyDown(KeyEvent.VK_UP)) {
+        if (in.isKeyUp(KeyEvent.VK_SHIFT)) {
+            //TODO: Shoot missile.
+            System.out.println("Missile Fired!");
+        }
+        if (in.isKeyUp(KeyEvent.VK_W) || in.isKeyUp(KeyEvent.VK_UP)) {
             master.spawnWave(drawable);
         }
         

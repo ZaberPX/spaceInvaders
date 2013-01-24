@@ -9,7 +9,6 @@ import java.nio.FloatBuffer;
 import javax.media.opengl.GL4;
 import javax.media.opengl.GLAutoDrawable;
 
-import px.util.graphics.ShaderLoader;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 

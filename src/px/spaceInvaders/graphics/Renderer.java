@@ -4,7 +4,7 @@ import javax.media.opengl.GL4;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 
-import px.util.input.InputMaster;
+import px.spaceInvaders.core.InputMaster;
 
 /**TODO Class Description and all Methods
  * @author Michael Stopa */
