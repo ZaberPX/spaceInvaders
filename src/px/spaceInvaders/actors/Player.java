@@ -25,8 +25,9 @@ public class Player extends Pawn {
     // ++++ ++++ Initialization ++++ ++++
 
     public Player(GLAutoDrawable drawable, SpriteMaster master, String texture,
-            Vector2f location, Vector2f size, float depth) {
-        super(drawable, master, texture, location, size, depth);
+            Vector2f location, Vector2f hitSize, Vector2f drawSize, float depth,
+            int health) {
+        super(drawable, master, texture, location, hitSize, drawSize, depth, health);
         // TODO Auto-generated constructor stub
     }
     
@@ -78,8 +79,8 @@ public class Player extends Pawn {
         if (gunCooldown < 1) {
             master.getProjectiles().add(new Projectile(drawable, master, this, 
                     new Vector2f(this.location.x + 4f, this.location.y + 32f), 
-                    "res/textures/Bullet.png", new Vector2f(8f, 32f), 
-                    0.6f, 800f,  new Vector2f(0f, 1f), 
+                    "res/textures/Bullet.png", new Vector2f(6f, 6f), 
+                    new Vector2f(8f, 32f), 0.6f, 800f,  new Vector2f(0f, 1f), 
                     new Vector2f(0, -32), 5000));
             gunCooldown = gunCooldownMax;
         }

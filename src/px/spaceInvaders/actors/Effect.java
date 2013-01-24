@@ -16,8 +16,8 @@ public class Effect extends Sprite {
 	LinkedList<Sprite> victims = new LinkedList<Sprite>();
 
     public Effect(GLAutoDrawable drawable, SpriteMaster master, String texture,
-            Vector2f location, Vector2f size, float depth) {
-        super(drawable, master, texture, location, size, depth);
+            Vector2f location, Vector2f hitSize, Vector2f drawSize, float depth) {
+        super(drawable, master, texture, location, hitSize, drawSize, depth);
         // TODO Auto-generated constructor stub
     }
     

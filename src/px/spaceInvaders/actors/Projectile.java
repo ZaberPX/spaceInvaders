@@ -21,9 +21,9 @@ public class Projectile extends Sprite {
     // ++++ ++++ Initialization ++++ ++++
 
     public Projectile(GLAutoDrawable drawable, SpriteMaster master, Sprite parent, 
-            Vector2f location, String texture, Vector2f size, float depth, float speed,
-            Vector2f direction, Vector2f offset, int lifetime) {
-        super(drawable, master, texture, location, size, depth);
+            Vector2f location, String texture, Vector2f hitSize, Vector2f drawSize, 
+            float depth, float speed, Vector2f direction, Vector2f offset, int lifetime) {
+        super(drawable, master, texture, location, hitSize, drawSize, depth);
         this.parent = parent;
         this.direction = direction.normalise(null);
         this.speed = speed;

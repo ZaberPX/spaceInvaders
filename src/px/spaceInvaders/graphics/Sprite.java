@@ -23,9 +23,12 @@ public class Sprite {
     
     //Rendering
     protected int texture;
+    /**Size of the sprite's collision box. */
+    protected Vector2f hitSize;
+    /**Offset of the sprite's visual representation (doesn't affect collision). */
     protected Vector2f offset;
     /**Size of the sprite in world coordinates (typically pixels) */
-    protected Vector2f size;
+    protected Vector2f drawSize;
     protected Matrix4f scaleMatrix;
     protected int modelUniform;
     protected float depth;
@@ -33,13 +36,13 @@ public class Sprite {
     
     // ++++ ++++ Initialization ++++ ++++
     
-    public Sprite(GLAutoDrawable drawable, SpriteMaster master, 
-            String texture, Vector2f location, Vector2f size, float depth) {
+    public Sprite(GLAutoDrawable drawable, SpriteMaster master, String texture, 
+            Vector2f location, Vector2f hitSize, Vector2f drawSize, float depth) {
         this.master = master;
         this.texture = master.loadTexture(drawable, texture);
         this.location = location;
-        this.size = size;
-        scaleMatrix = Matrix4f.scale(new Vector3f(size.x, size.y, 1.0f), 
+        this.drawSize = drawSize;
+        scaleMatrix = Matrix4f.scale(new Vector3f(drawSize.x, drawSize.y, 1.0f), 
                 new Matrix4f(), null);
         this.location = location;
         this.modelUniform = master.getModelUniform();
@@ -67,13 +70,13 @@ public class Sprite {
      * @return True if this object is currently intersecting the other object. */
     public boolean collidesWith(Sprite other) {
         Vector2f thisTopLeft = Vector2f.sub(location, 
-                (Vector2f) new Vector2f(size).scale(0.5f), null);
+                (Vector2f) new Vector2f(hitSize).scale(0.5f), null);
         Vector2f thisBottomRight = Vector2f.add(location, 
-                (Vector2f) new Vector2f(size).scale(0.5f), null);
+                (Vector2f) new Vector2f(hitSize).scale(0.5f), null);
         Vector2f otherTopLeft = Vector2f.sub(other.getLocation(), 
-                (Vector2f) new Vector2f(other.getSize()).scale(0.5f), null);
+                (Vector2f) new Vector2f(other.getHitSize()).scale(0.5f), null);
         Vector2f otherBottomRight = Vector2f.add(other.getLocation(), 
-                (Vector2f) new Vector2f(other.getSize()).scale(0.5f), null);
+                (Vector2f) new Vector2f(other.getHitSize()).scale(0.5f), null);
         
         //Axis-aligned rectnagle test URL:
         //http://leetcode.com/2011/05/determine-if-two-rectangles-overlap.html
@@ -85,8 +88,8 @@ public class Sprite {
         }
     }
 
-    public Vector2f getSize() {
-        return size;
+    public Vector2f getHitSize() {
+        return hitSize;
     }
 
     public Vector2f getLocation() {

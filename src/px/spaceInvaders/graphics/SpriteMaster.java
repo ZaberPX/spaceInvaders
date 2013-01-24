@@ -23,6 +23,8 @@ public class SpriteMaster {
     
     // ++++ ++++ Data ++++ ++++
     
+    //Game data
+    private int score = 0;
     private TextureMaster textureMaster;
     private Player player;
     private Bunker[] bunkers;
@@ -33,11 +35,10 @@ public class SpriteMaster {
     private LinkedList<Projectile> projectiles;
     private LinkedList<Projectile> projectilesDisposal;
     
+    //OpenGL variables
     private int shaderProgram;
-    
     private int vao;
     private int vbo;
-    
     private int depthUniform;
     private int modelUniform;
     /**View transform: scales coordinates to match pixels, making the screen 1280x720 in
@@ -50,6 +51,10 @@ public class SpriteMaster {
     private int viewUniform;
     
     // ++++ ++++ Accessors ++++ ++++
+    
+    public int getScore() {
+        return score;
+    }
     
     public int getDepthUniform() {
         return depthUniform;
@@ -85,6 +90,12 @@ public class SpriteMaster {
     
     public int loadTexture(GLAutoDrawable drawable, String filename) {
         return textureMaster.loadTexturePng(drawable, filename);
+    }
+    
+    // ++++ ++++ Mutators ++++ ++++
+    
+    public void addScore(int points) {
+        score += points;
     }
     
     // ++++ ++++ Initialization ++++ ++++
@@ -151,15 +162,21 @@ public class SpriteMaster {
         gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, 0);
         gl.glUseProgram(0);
         
-        // Game State Initialization
+        init(drawable);
+    }
+    
+    public void init(GLAutoDrawable drawable) {
         
+        score = 0;
         player = new Player(drawable, this, "res/textures/PlayerTank.png", 
-                new Vector2f(0f, -64f), new Vector2f(64f, 64f), 0.5f);
+                new Vector2f(0f, -64f), new Vector2f(50f, 50f), new Vector2f(64f, 64f), 
+                0.5f, 100);
         bunkers = new Bunker[4];
         //TODO init bunkers 0-3
         enemies = new LinkedList<Enemy>();
         effects = new LinkedList<Effect>();
         projectiles = new LinkedList<Projectile>();
+        
     }
     
     // ++++ ++++ Disposal ++++ ++++

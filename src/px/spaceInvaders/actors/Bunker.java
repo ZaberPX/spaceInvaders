@@ -12,8 +12,8 @@ import px.spaceInvaders.graphics.SpriteMaster;
 public class Bunker extends Sprite {
     
     public Bunker(GLAutoDrawable drawable, SpriteMaster master, String texture,
-            Vector2f location, Vector2f size, float depth) {
-        super(drawable, master, texture, location, size, depth);
+            Vector2f location, Vector2f hitSize, Vector2f drawSize, float depth) {
+        super(drawable, master, texture, location, hitSize, drawSize, depth);
         // TODO Auto-generated constructor stub
     }
 }

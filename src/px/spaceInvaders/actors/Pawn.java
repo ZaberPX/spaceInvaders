@@ -11,14 +11,29 @@ import px.spaceInvaders.graphics.SpriteMaster;
  * @author Michael Stopa */
 public class Pawn extends Sprite {
     
+    // ++++ ++++ Data ++++ ++++
+    
+    protected int maxHealth;
+    protected int health;
+    
     // ++++ ++++ Initialization ++++ ++++
 
     public Pawn(GLAutoDrawable drawable, SpriteMaster master, String texture,
-            Vector2f location, Vector2f size, float depth) {
-        super(drawable, master, texture, location, size, depth);
+            Vector2f location, Vector2f hitSize, Vector2f drawSize, float depth, 
+            int health) {
+        super(drawable, master, texture, location, hitSize, drawSize, depth);
+        this.maxHealth = health;
+        this.health = maxHealth;
     }
     
     // ++++ ++++ Game Logic ++++ ++++
+    
+    public void dealDamage(int damage) {
+        health -= damage;
+        if (health > maxHealth) {
+            health = maxHealth;
+        }
+    }
     
     @Override
     public void update(GLAutoDrawable drawable, long elapsedTime) {
