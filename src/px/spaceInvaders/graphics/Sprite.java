@@ -41,6 +41,7 @@ public class Sprite {
         this.master = master;
         this.texture = master.loadTexture(drawable, texture);
         this.location = location;
+        this.hitSize = hitSize;
         this.drawSize = drawSize;
         scaleMatrix = Matrix4f.scale(new Vector3f(drawSize.x, drawSize.y, 1.0f), 
                 new Matrix4f(), null);
@@ -69,6 +70,11 @@ public class Sprite {
      * @param other Object being compared with.
      * @return True if this object is currently intersecting the other object. */
     public boolean collidesWith(Sprite other) {
+        //Don't hit yourself, silly.
+        if (this == other) {
+            return false;
+        }
+        
         Vector2f thisTopLeft = Vector2f.sub(location, 
                 (Vector2f) new Vector2f(hitSize).scale(0.5f), null);
         Vector2f thisBottomRight = Vector2f.add(location, 

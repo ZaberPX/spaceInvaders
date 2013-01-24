@@ -24,10 +24,9 @@ public class Player extends Pawn {
     
     // ++++ ++++ Initialization ++++ ++++
 
-    public Player(GLAutoDrawable drawable, SpriteMaster master, String texture,
-            Vector2f location, Vector2f hitSize, Vector2f drawSize, float depth,
-            int health) {
-        super(drawable, master, texture, location, hitSize, drawSize, depth, health);
+    public Player(GLAutoDrawable drawable, SpriteMaster master) {
+        super(drawable, master, "res/textures/PlayerTank.png", new Vector2f(0, -64f), 
+                new Vector2f(50f, 50f), new Vector2f(64f, 64f), 0.5f, 100);
         // TODO Auto-generated constructor stub
     }
     
@@ -51,6 +50,9 @@ public class Player extends Pawn {
         if (in.isKeyDown(KeyEvent.VK_SPACE)) {
             shoot(drawable);
         }
+        if (in.isKeyDown(KeyEvent.VK_W) || in.isKeyDown(KeyEvent.VK_UP)) {
+            master.spawnWave(drawable);
+        }
         
         if (movement.lengthSquared() > 0) {
             movement = movement.normalise(null);
@@ -62,6 +64,14 @@ public class Player extends Pawn {
         }
         
         super.update(drawable, elapsedTime);
+        
+        if (location.x < 0f) {
+            location.x = 0f;
+            displacement.x = 0f;
+        } else if (location.x > 960f) {
+            location.x = 960f;
+            displacement.x = 0f;
+        }
         
         //Slow down the Sprite
         float slow = (float)elapsedTime * 2f;

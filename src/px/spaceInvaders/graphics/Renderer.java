@@ -78,5 +78,6 @@ public class Renderer implements GLEventListener {
     public void reshape(GLAutoDrawable drawable, int x, int y, int width,
             int height) {
         //TODO Reshape Projection matrix for resizing screen.
+        //Then again: I haven't set up for resizing this time around, may not need proj
     }
 }

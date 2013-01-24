@@ -54,15 +54,33 @@ public class Projectile extends Sprite {
     }
     
     public void checkCollision() {
+        for (Projectile p: master.getProjectiles()) {
+            if (this.collidesWith(p)) {
+                detonate();
+            }
+        }
         if (parent instanceof Player) {
-        	//TODO check against enemies and their projectiles
+        	for (Enemy e: master.getEnemies()) {
+        	    if (this.collidesWith(e)) {
+        	        detonate();
+        	        e.dealDamage(10);
+        	    }
+        	}
         } else if (parent instanceof Enemy) {
-        	//TODO check against the player and the bunkers
+            for (Bunker b: master.getBunkers()) {
+                if (this.collidesWith(b)) {
+                    detonate();
+                }
+            }
+            if (this.collidesWith(master.getPlayer())) {
+                detonate();
+            }
         }
     }
     
     /**TODO: removes this projectile and spawns an explosion. */
     public void detonate() {
-        
+        System.out.println("Hit on Enemy");
+        //TODO: Spawn an explosion effect to actually deal the damage.
     }
 }

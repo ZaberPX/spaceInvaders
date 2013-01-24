@@ -16,6 +16,12 @@ public class Pawn extends Sprite {
     protected int maxHealth;
     protected int health;
     
+    // ++++ ++++ Accessors ++++ ++++
+    
+    public int getHealth() {
+        return health;
+    }
+    
     // ++++ ++++ Initialization ++++ ++++
 
     public Pawn(GLAutoDrawable drawable, SpriteMaster master, String texture,
@@ -39,13 +45,5 @@ public class Pawn extends Sprite {
     public void update(GLAutoDrawable drawable, long elapsedTime) {
         
         super.update(drawable, elapsedTime);
-        
-        if (location.x < 0f) {
-            location.x = 0f;
-            displacement.x = 0f;
-        } else if (location.x > 960f) {
-            location.x = 960f;
-            displacement.x = 0f;
-        }
     }
 }

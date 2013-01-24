@@ -24,7 +24,8 @@ public class SpriteMaster {
     // ++++ ++++ Data ++++ ++++
     
     //Game data
-    private int score = 0;
+    private int waves;
+    private int score;
     private TextureMaster textureMaster;
     private Player player;
     private Bunker[] bunkers;
@@ -52,6 +53,10 @@ public class SpriteMaster {
     
     // ++++ ++++ Accessors ++++ ++++
     
+    public int getWaves() {
+        return waves;
+    }
+    
     public int getScore() {
         return score;
     }
@@ -68,16 +73,16 @@ public class SpriteMaster {
         return view;
     }
     
+    public Player getPlayer() {
+        return player;
+    }
+    
     public Bunker[] getBunkers() {
     	return bunkers;
     }
     
     public LinkedList<Enemy> getEnemies() {
     	return enemies;
-    }
-    
-    public Player getPlayer() {
-    	return player;
     }
     
     public LinkedList<Projectile> getProjectiles() {
@@ -90,12 +95,6 @@ public class SpriteMaster {
     
     public int loadTexture(GLAutoDrawable drawable, String filename) {
         return textureMaster.loadTexturePng(drawable, filename);
-    }
-    
-    // ++++ ++++ Mutators ++++ ++++
-    
-    public void addScore(int points) {
-        score += points;
     }
     
     // ++++ ++++ Initialization ++++ ++++
@@ -165,18 +164,38 @@ public class SpriteMaster {
         init(drawable);
     }
     
+    // ++++ ++++ Game Control ++++ ++++
+    
     public void init(GLAutoDrawable drawable) {
         
         score = 0;
-        player = new Player(drawable, this, "res/textures/PlayerTank.png", 
-                new Vector2f(0f, -64f), new Vector2f(50f, 50f), new Vector2f(64f, 64f), 
-                0.5f, 100);
+        waves = 0;
+        player = new Player(drawable, this);
         bunkers = new Bunker[4];
         //TODO init bunkers 0-3
         enemies = new LinkedList<Enemy>();
         effects = new LinkedList<Effect>();
         projectiles = new LinkedList<Projectile>();
-        
+
+        spawnWave(drawable);
+    }
+    
+    public void addScore(int points) {
+        score += points;
+    }
+    
+    public void spawnWave(GLAutoDrawable drawable) {
+        enemies.add(new Enemy(drawable, this, "res/textures/EnemyBomber.png", 
+                new Vector2f(240f, 512f), new Vector2f(50f, 50f), 
+                new Vector2f(64f, 64f), 0.5f, 100 + waves));
+        enemies.add(new Enemy(drawable, this, "res/textures/EnemyFighter.png", 
+                new Vector2f(480f, 512f), new Vector2f(50f, 50f), 
+                new Vector2f(64f, 64f), 0.5f, 100 + waves));
+        enemies.add(new Enemy(drawable, this, "res/textures/EnemyGunship.png", 
+                new Vector2f(720f, 512f), new Vector2f(50f, 50f), 
+                new Vector2f(64f, 64f), 0.5f, 100 + waves));
+        waves++;
+        addScore(1);
     }
     
     // ++++ ++++ Disposal ++++ ++++
@@ -220,16 +239,22 @@ public class SpriteMaster {
     // ++++ ++++ Game Logic ++++ ++++
     
     public void update(GLAutoDrawable drawable, long elapsedTime) {
+        //TODO: Store static reference to GLAutoDrawable, updated every update loop?
+        
         enemiesDisposal = new LinkedList<Enemy>();
         effectsDisposal = new LinkedList<Effect>();
         projectilesDisposal = new LinkedList<Projectile>();
         
         //Update game state
+        //TODO Commented out until we actually have bunkers.
 //        for (Bunker b : bunkers) {
 //            b.update(drawable, elapsedTime);
 //        }
         for (Enemy e : enemies) {
             e.update(drawable, elapsedTime);
+            if (e.getHealth() <= 0) {
+                enemiesDisposal.add(e);
+            }
         }
         player.update(drawable, elapsedTime);
         for (Projectile p : projectiles) {
@@ -241,11 +266,13 @@ public class SpriteMaster {
         }
         for (Effect e : effects) {
             e.update(drawable, elapsedTime);
+            //Check for death based on lifetime.
         }
         
         //Dispose of dead objects
         for (Enemy e : enemiesDisposal) {
             enemies.remove(e);
+            addScore(1);
         }
         for (Effect e : effectsDisposal) {
             effects.remove(e);
