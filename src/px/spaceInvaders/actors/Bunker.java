@@ -9,28 +9,11 @@ import px.spaceInvaders.graphics.SpriteMaster;
 
 /**TODO Class Description and all Methods
  * @author Michael Stopa */
-public class Bunker extends Sprite implements Collideable {
+public class Bunker extends Sprite {
     
     public Bunker(GLAutoDrawable drawable, SpriteMaster master, String texture,
-            Vector2f scale, float depth) {
-        super(drawable, master, texture, scale, depth);
+            Vector2f location, Vector2f size, float depth) {
+        super(drawable, master, texture, location, size, depth);
         // TODO Auto-generated constructor stub
     }
-
-    @Override
-    public boolean collidesWith(Collideable other) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    
-    @Override
-    public Vector2f getScale() {
-        return scale;
-    }
-    
-    @Override
-    public Vector2f getLocation() {
-        return location;
-    }
-    
 }

@@ -52,8 +52,10 @@ public class Frame extends JFrame {
         getContentPane().add(glCanvas);
         glCanvas.setPreferredSize(new Dimension(1280, 720));
         
-        //Input Setupu!
+        //Input Setupu! Add listeners to both frame and canvas so it doesn't matter
+        //which actually has focus.
         addKeyListener(InputMaster.getInstance());
+        glCanvas.addKeyListener(InputMaster.getInstance());
         
         //Frame setup
         pack();

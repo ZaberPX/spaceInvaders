@@ -11,7 +11,7 @@ import px.util.input.InputMaster;
 
 /**TODO Class Description and all Methods
  * @author Michael Stopa */
-public class Player extends Pawn implements Collideable {
+public class Player extends Pawn {
     
     // ++++ ++++ Data ++++ ++++
     
@@ -25,8 +25,8 @@ public class Player extends Pawn implements Collideable {
     // ++++ ++++ Initialization ++++ ++++
 
     public Player(GLAutoDrawable drawable, SpriteMaster master, String texture,
-            Vector2f scale, float depth) {
-        super(drawable, master, texture, scale, depth);
+            Vector2f location, Vector2f size, float depth) {
+        super(drawable, master, texture, location, size, depth);
         // TODO Auto-generated constructor stub
     }
     

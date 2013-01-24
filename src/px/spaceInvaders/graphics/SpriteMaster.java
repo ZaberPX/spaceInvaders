@@ -154,7 +154,7 @@ public class SpriteMaster {
         // Game State Initialization
         
         player = new Player(drawable, this, "res/textures/PlayerTank.png", 
-                new Vector2f(64f, 64f), 0.5f);
+                new Vector2f(0f, -64f), new Vector2f(64f, 64f), 0.5f);
         bunkers = new Bunker[4];
         //TODO init bunkers 0-3
         enemies = new LinkedList<Enemy>();

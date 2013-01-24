@@ -13,15 +13,16 @@ import px.spaceInvaders.graphics.SpriteMaster;
  * @author Michael Stopa */
 public class Effect extends Sprite {
 	
-	LinkedList<Collideable> victims = new LinkedList<Collideable>();
+	LinkedList<Sprite> victims = new LinkedList<Sprite>();
 
     public Effect(GLAutoDrawable drawable, SpriteMaster master, String texture,
-            Vector2f scale, float depth) {
-        super(drawable, master, texture, scale, depth);
+            Vector2f location, Vector2f size, float depth) {
+        super(drawable, master, texture, location, size, depth);
         // TODO Auto-generated constructor stub
     }
     
     public void update(GLAutoDrawable drawable, long elapsedTime) {
+        super.update(drawable, elapsedTime);
     	//TODO apply damage to hit Collideables
     }
 }
