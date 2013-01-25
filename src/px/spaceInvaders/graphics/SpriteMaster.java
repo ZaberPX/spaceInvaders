@@ -25,7 +25,8 @@ public class SpriteMaster {
     
     //Game data
     public static Random random;
-    private int waves;
+    public static TextRenderer textRenderer;
+    private int wave;
     private int score;
     private TextureMaster textureMaster;
     private Player player;
@@ -63,8 +64,8 @@ public class SpriteMaster {
     
     // ++++ ++++ Accessors ++++ ++++
     
-    public int getWaves() {
-        return waves;
+    public int getWave() {
+        return wave;
     }
     
     public int getScore() {
@@ -101,6 +102,14 @@ public class SpriteMaster {
     
     public LinkedList<Effect> getEffects() {
         return effects;
+    }
+    
+    public int getVao() {
+        return vao;
+    }
+    
+    public int getShaderProgram() {
+        return shaderProgram;
     }
     
     public int loadTexture(GLAutoDrawable drawable, String filename) {
@@ -164,7 +173,7 @@ public class SpriteMaster {
         //Setup vertex shader attribute pointers.
         int positionAttribute = gl.glGetAttribLocation(shaderProgram, "position");
         gl.glEnableVertexAttribArray(positionAttribute);
-        gl.glVertexAttribPointer(positionAttribute, 3, GL4.GL_FLOAT, false, 4 * 4, 0);
+        gl.glVertexAttribPointer(positionAttribute, 2, GL4.GL_FLOAT, false, 4 * 4, 0);
         
         int texcoordAttribute = gl.glGetAttribLocation(shaderProgram, "texcoord");
         gl.glEnableVertexAttribArray(texcoordAttribute);
@@ -175,6 +184,9 @@ public class SpriteMaster {
         gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, 0);
         gl.glUseProgram(0);
         
+        //Setup TextRenderer
+        textRenderer = new TextRenderer(drawable, this, "res/text/Text.png");
+        
         init(drawable);
     }
     
@@ -183,7 +195,7 @@ public class SpriteMaster {
     public void init(GLAutoDrawable drawable) {
         
         score = 0;
-        waves = 0;
+        wave = 0;
         player = new Player(drawable, this);
         bunkers = new Bunker[4];
         //TODO init bunkers 0-3
@@ -208,21 +220,21 @@ public class SpriteMaster {
             case 0:
                 enemies.add(new Enemy(drawable, this, "res/textures/EnemyBomber.png", 
                         new Vector2f(32f + 64f * i, 512f), new Vector2f(50f, 50f), 
-                        new Vector2f(64f, 64f), 0.5f, 100 + waves));
+                        new Vector2f(64f, 64f), 0.5f, 100 + wave));
                 break;
             case 1:
                 enemies.add(new Enemy(drawable, this, "res/textures/EnemyFighter.png", 
                         new Vector2f(32f + 64f * i, 512f), new Vector2f(50f, 50f), 
-                        new Vector2f(64f, 64f), 0.5f, 100 + waves));
+                        new Vector2f(64f, 64f), 0.5f, 100 + wave));
                 break;
             case 2:
                 enemies.add(new Enemy(drawable, this, "res/textures/EnemyGunship.png", 
                         new Vector2f(32f + 64f * i, 512f), new Vector2f(50f, 50f), 
-                        new Vector2f(64f, 64f), 0.5f, 100 + waves));
+                        new Vector2f(64f, 64f), 0.5f, 100 + wave));
                 break;
             }
         }
-        waves++;
+        wave++;
         score++;
     }
     
@@ -264,6 +276,13 @@ public class SpriteMaster {
         drawQuad(drawable, player.getTexture(), 0.9f, new Vector2f(16, 16), 
                 new Vector2f(trackerPosition, 0f));//*/
         
+        textRenderer.drawString(drawable, "Score: " + score, new Vector2f(-128f, -128f), 
+                0.9f, TextRenderer.Align.LEFT);
+        textRenderer.drawString(drawable, "Wave: " + wave, new Vector2f(128f, -128f), 
+                0.9f, TextRenderer.Align.LEFT);
+        textRenderer.drawString(drawable, "Health: " + player.getHealth(), 
+                new Vector2f(384f, -128f), 0.9f, TextRenderer.Align.LEFT);
+        
         gl.glBindVertexArray(0);
         gl.glUseProgram(0);
     }
@@ -277,9 +296,8 @@ public class SpriteMaster {
         
         //Setup Model matrix
         //Scale
-        Matrix4f scaleMatrix = Matrix4f.scale(new Vector3f(size.x, size.y, 1.0f), 
+        Matrix4f model = Matrix4f.scale(new Vector3f(size.x, size.y, 1.0f), 
                 new Matrix4f(), null);
-        Matrix4f model = Matrix4f.mul(scaleMatrix, new Matrix4f(), null);
         //Location
         Matrix4f loc = Matrix4f.translate(location, new Matrix4f(), null);
         model = Matrix4f.mul(loc, model, null);
@@ -301,11 +319,11 @@ public class SpriteMaster {
         projectilesDisposal = new LinkedList<Projectile>();
         
         //Update tracker
-        float movement = trackerDirection * (Enemy.BASE_ACCEL + waves / 10f);
+        float movement = trackerDirection * (Enemy.BASE_ACCEL + wave / 10f);
         trackerDisplacement += movement;
-        if (Math.abs(trackerDisplacement) > Enemy.BASE_SPEED + waves) {
+        if (Math.abs(trackerDisplacement) > Enemy.BASE_SPEED + wave) {
             trackerDisplacement = Math.signum(trackerDisplacement) 
-                    * (Enemy.BASE_SPEED + waves);
+                    * (Enemy.BASE_SPEED + wave);
         }
         trackerPosition += trackerDisplacement * (elapsedTime / 1000f);
         if (trackerPosition < 0 && trackerDirection != 1f) {

@@ -18,7 +18,7 @@ public class TextureMaster {
     
     // ++++ ++++ Data ++++ ++++
     
-    private HashMap<String,Integer> textures;
+    private HashMap<String, Integer> textures;
     
     // ++++ ++++ File I/O ++++ ++++
     

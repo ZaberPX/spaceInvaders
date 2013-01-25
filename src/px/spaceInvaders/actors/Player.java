@@ -54,6 +54,10 @@ public class Player extends Pawn {
             //TODO: Shoot missile.
             System.out.println("Missile Fired!");
         }
+        if (in.isKeyUp(KeyEvent.VK_ESCAPE)) {
+            //TODO: Pause Menu
+            System.exit(0);
+        }
         
         if (movement.lengthSquared() > 0) {
             movement = movement.normalise(null);

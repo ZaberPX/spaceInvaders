@@ -41,10 +41,10 @@ public class Enemy extends Pawn {
     public void update(GLAutoDrawable drawable, long elapsedTime) {
         
         movement = (Vector2f) new Vector2f(BASE_MOVEMENT.x * direction, BASE_MOVEMENT.y)
-                .scale(BASE_ACCEL + (float) master.getWaves() / 10f);
+                .scale(BASE_ACCEL + (float) master.getWave() / 10f);
         displacement = Vector2f.add(movement, displacement, null);
-        if (displacement.length() > BASE_SPEED + master.getWaves()) {
-            displacement.normalise().scale(BASE_SPEED + master.getWaves());
+        if (displacement.length() > BASE_SPEED + master.getWave()) {
+            displacement.normalise().scale(BASE_SPEED + master.getWave());
         }
         
         super.update(drawable, elapsedTime);
