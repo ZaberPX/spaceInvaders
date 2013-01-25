@@ -37,6 +37,15 @@ public class SpriteMaster {
     private LinkedList<Projectile> projectiles;
     private LinkedList<Projectile> projectilesDisposal;
     
+    /**The tracker is an invisisible entity that is supposed to travel in time with the
+     * invaders to determine when a new== wave should spawn, it does so by simulating the
+     * time it would take for a spawned invader to change direction form hitting the
+     * edge of its column. */
+    private float trackerPosition;
+    private float trackerDisplacement;
+    private float trackerDirection;
+    private float trackerColumnWidth;
+    
     //OpenGL variables
     private int shaderProgram;
     private int vao;
@@ -181,12 +190,19 @@ public class SpriteMaster {
         enemies = new LinkedList<Enemy>();
         effects = new LinkedList<Effect>();
         projectiles = new LinkedList<Projectile>();
+        
+        //Tracker initiation
+        trackerColumnWidth = (float) Math.sqrt(Math.pow(Enemy.COLUMN_WIDTH, 2) 
+                + Math.pow(Enemy.COLUMN_WIDTH * 0.25f, 2));
+        trackerPosition = 0f;
+        trackerDirection = 1f;
+        trackerDisplacement = 0f;
 
         spawnWave(drawable);
     }
     
     public void spawnWave(GLAutoDrawable drawable) {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 11; i++) {
             int result = random.nextInt(4);
             switch (result) {
             case 0:
@@ -244,8 +260,35 @@ public class SpriteMaster {
             e.draw(drawable);
         }
         
+        /*/Debugging code, draws the tracker.
+        drawQuad(drawable, player.getTexture(), 0.9f, new Vector2f(16, 16), 
+                new Vector2f(trackerPosition, 0f));//*/
+        
         gl.glBindVertexArray(0);
         gl.glUseProgram(0);
+    }
+    
+    public void drawQuad(GLAutoDrawable drawable, int texture, float depth, 
+            Vector2f size, Vector2f location) {
+        GL4 gl = drawable.getGL().getGL4();
+        
+        gl.glBindTexture(GL4.GL_TEXTURE_2D, texture);
+        gl.glUniform1f(depthUniform, depth);
+        
+        //Setup Model matrix
+        //Scale
+        Matrix4f scaleMatrix = Matrix4f.scale(new Vector3f(size.x, size.y, 1.0f), 
+                new Matrix4f(), null);
+        Matrix4f model = Matrix4f.mul(scaleMatrix, new Matrix4f(), null);
+        //Location
+        Matrix4f loc = Matrix4f.translate(location, new Matrix4f(), null);
+        model = Matrix4f.mul(loc, model, null);
+        
+        FloatBuffer buffer = FloatBuffer.allocate(16);
+        model.store(buffer);
+        buffer.rewind();
+        gl.glUniformMatrix4fv(modelUniform, 1, false, buffer);
+        gl.glDrawArrays(GL4.GL_TRIANGLE_STRIP, 0, 4);
     }
     
     // ++++ ++++ Game Logic ++++ ++++
@@ -257,7 +300,24 @@ public class SpriteMaster {
         effectsDisposal = new LinkedList<Effect>();
         projectilesDisposal = new LinkedList<Projectile>();
         
-        //Update game state
+        //Update tracker
+        float movement = trackerDirection * (Enemy.BASE_ACCEL + waves / 10f);
+        trackerDisplacement += movement;
+        if (Math.abs(trackerDisplacement) > Enemy.BASE_SPEED + waves) {
+            trackerDisplacement = Math.signum(trackerDisplacement) 
+                    * (Enemy.BASE_SPEED + waves);
+        }
+        trackerPosition += trackerDisplacement * (elapsedTime / 1000f);
+        if (trackerPosition < 0 && trackerDirection != 1f) {
+            trackerDirection = 1f;
+            spawnWave(drawable);
+        }
+        if (trackerPosition > trackerColumnWidth && trackerDirection != -1f) {
+            trackerDirection = -1f;
+            spawnWave(drawable);
+        }
+        
+        //Update actors
         //TODO Commented out until we actually have bunkers.
 //        for (Bunker b : bunkers) {
 //            b.update(drawable, elapsedTime);

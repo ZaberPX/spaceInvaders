@@ -12,8 +12,8 @@ public class Enemy extends Pawn {
     
     // ++++ ++++ Constants ++++ ++++
     
-    public static final float BASE_SPEED = 10f;
-    public static final float BASE_ACCEL = 1f;
+    public static final float BASE_SPEED = 40f;
+    public static final float BASE_ACCEL = 4f;
     /**How far the enemy will move across before flipping its x direction.*/
     public static final float COLUMN_WIDTH = 256f;
     public static final Vector2f BASE_MOVEMENT = 

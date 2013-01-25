@@ -54,9 +54,6 @@ public class Player extends Pawn {
             //TODO: Shoot missile.
             System.out.println("Missile Fired!");
         }
-        if (in.isKeyUp(KeyEvent.VK_W) || in.isKeyUp(KeyEvent.VK_UP)) {
-            master.spawnWave(drawable);
-        }
         
         if (movement.lengthSquared() > 0) {
             movement = movement.normalise(null);

@@ -34,6 +34,20 @@ public class Sprite {
     protected float depth;
     protected int depthUniform;
     
+    // ++++ ++++ Accessors ++++ ++++
+    
+    public int getTexture() {
+        return texture;
+    }
+
+    public Vector2f getHitSize() {
+        return hitSize;
+    }
+
+    public Vector2f getLocation() {
+        return location;
+    }
+    
     // ++++ ++++ Initialization ++++ ++++
     
     public Sprite(GLAutoDrawable drawable, SpriteMaster master, String texture, 
@@ -92,14 +106,6 @@ public class Sprite {
         } else {
             return false; 
         }
-    }
-
-    public Vector2f getHitSize() {
-        return hitSize;
-    }
-
-    public Vector2f getLocation() {
-        return location;
     }
     
     // ++++ ++++ Rendering ++++ ++++
