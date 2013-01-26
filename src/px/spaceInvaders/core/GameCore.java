@@ -6,6 +6,15 @@ import javax.media.opengl.awt.GLCanvas;
  * @author Michael Stopa */
 public class GameCore {
     
+    // ++++ ++++ Enumeration ++++ ++++
+    
+    public enum Mode {
+        IN_GAME,
+        PAUSED,
+        LOADING,
+        IN_MENU
+    }
+    
     // ++++ ++++ Data ++++ ++++
     
     public static GameCore instance;
@@ -27,15 +36,6 @@ public class GameCore {
      * @param args Command-line Arguments */
     public static void main(String[] args) {
         instance = new GameCore();
-    }
-    
-    // ++++ ++++ Enumeration ++++ ++++
-    
-    public enum Mode {
-        IN_GAME,
-        PAUSED,
-        LOADING,
-        IN_MENU
     }
     
     // ++++ ++++ Initialization ++++ ++++

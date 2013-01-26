@@ -1,5 +1,6 @@
 package px.spaceInvaders.graphics;
 
+import java.awt.event.KeyEvent;
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.Random;
@@ -10,12 +11,13 @@ import javax.media.opengl.GLAutoDrawable;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
-import px.spaceInvaders.actors.Bunker;
 import px.spaceInvaders.actors.Effect;
 import px.spaceInvaders.actors.Enemy;
 import px.spaceInvaders.actors.Player;
 import px.spaceInvaders.actors.Projectile;
+import px.spaceInvaders.core.InputMaster;
 
 /**TODO Class Description and all Methods
  * @author Michael Stopa */
@@ -25,12 +27,11 @@ public class SpriteMaster {
     
     //Game data
     public static Random random;
-    public static TextRenderer textRenderer;
+    public TextRenderer textRenderer;
     private int wave;
     private int score;
     private TextureMaster textureMaster;
     private Player player;
-    private Bunker[] bunkers;
     private LinkedList<Enemy> enemies;
     private LinkedList<Enemy> enemiesDisposal;
     private LinkedList<Effect> effects;
@@ -53,6 +54,7 @@ public class SpriteMaster {
     private int vbo;
     private int depthUniform;
     private int modelUniform;
+    private int tintUniform;
     /**View transform: scales coordinates to match pixels, making the screen 1280x720 in
      * world coordinates, also moves the camera up 480 units and right 208 to put the 
      * world origin near the bottom left of the screen while stopping the Invaders from
@@ -61,60 +63,6 @@ public class SpriteMaster {
      * while also allowing invaders 960 units of lateral movement.*/
     private Matrix4f view;
     private int viewUniform;
-    
-    // ++++ ++++ Accessors ++++ ++++
-    
-    public int getWave() {
-        return wave;
-    }
-    
-    public int getScore() {
-        return score;
-    }
-    
-    public int getDepthUniform() {
-        return depthUniform;
-    }
-    
-    public int getModelUniform() {
-        return modelUniform;
-    }
-
-    public Matrix4f getView() {
-        return view;
-    }
-    
-    public Player getPlayer() {
-        return player;
-    }
-    
-    public Bunker[] getBunkers() {
-    	return bunkers;
-    }
-    
-    public LinkedList<Enemy> getEnemies() {
-    	return enemies;
-    }
-    
-    public LinkedList<Projectile> getProjectiles() {
-    	return projectiles;
-    }
-    
-    public LinkedList<Effect> getEffects() {
-        return effects;
-    }
-    
-    public int getVao() {
-        return vao;
-    }
-    
-    public int getShaderProgram() {
-        return shaderProgram;
-    }
-    
-    public int loadTexture(GLAutoDrawable drawable, String filename) {
-        return textureMaster.loadTexturePng(drawable, filename);
-    }
     
     // ++++ ++++ Initialization ++++ ++++
     
@@ -139,6 +87,7 @@ public class SpriteMaster {
         depthUniform = gl.glGetUniformLocation(shaderProgram, "depth");
         modelUniform = gl.glGetUniformLocation(shaderProgram, "model");
         viewUniform = gl.glGetUniformLocation(shaderProgram, "view");
+        tintUniform = gl.glGetUniformLocation(shaderProgram, "tint");
 
         //Setup transforms (no Projection, this is 2D after all)
         Matrix4f scale = Matrix4f.scale(new Vector3f(1f/640f, 1f/360f, 1f), 
@@ -197,8 +146,6 @@ public class SpriteMaster {
         score = 0;
         wave = 0;
         player = new Player(drawable, this);
-        bunkers = new Bunker[4];
-        //TODO init bunkers 0-3
         enemies = new LinkedList<Enemy>();
         effects = new LinkedList<Effect>();
         projectiles = new LinkedList<Projectile>();
@@ -219,17 +166,17 @@ public class SpriteMaster {
             switch (result) {
             case 0:
                 enemies.add(new Enemy(drawable, this, "res/textures/EnemyBomber.png", 
-                        new Vector2f(32f + 64f * i, 512f), new Vector2f(50f, 50f), 
+                        new Vector2f(32f + 64f * i, 512f), new Vector2f(50f, 20f), 
                         new Vector2f(64f, 64f), 0.5f, 100 + wave));
                 break;
             case 1:
                 enemies.add(new Enemy(drawable, this, "res/textures/EnemyFighter.png", 
-                        new Vector2f(32f + 64f * i, 512f), new Vector2f(50f, 50f), 
+                        new Vector2f(32f + 64f * i, 512f), new Vector2f(50f, 10f), 
                         new Vector2f(64f, 64f), 0.5f, 100 + wave));
                 break;
             case 2:
                 enemies.add(new Enemy(drawable, this, "res/textures/EnemyGunship.png", 
-                        new Vector2f(32f + 64f * i, 512f), new Vector2f(50f, 50f), 
+                        new Vector2f(32f + 64f * i, 512f), new Vector2f(50f, 10f), 
                         new Vector2f(64f, 64f), 0.5f, 100 + wave));
                 break;
             }
@@ -277,11 +224,14 @@ public class SpriteMaster {
                 new Vector2f(trackerPosition, 0f));//*/
         
         textRenderer.drawString(drawable, "Score: " + score, new Vector2f(-128f, -128f), 
-                0.9f, TextRenderer.Align.LEFT);
+                0.9f, TextRenderer.Align.LEFT, new Vector2f(8f, 16f), 
+                new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
         textRenderer.drawString(drawable, "Wave: " + wave, new Vector2f(128f, -128f), 
-                0.9f, TextRenderer.Align.LEFT);
+                0.9f, TextRenderer.Align.LEFT, new Vector2f(8f, 16f), 
+                new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
         textRenderer.drawString(drawable, "Health: " + player.getHealth(), 
-                new Vector2f(384f, -128f), 0.9f, TextRenderer.Align.LEFT);
+                new Vector2f(384f, -128f), 0.9f, TextRenderer.Align.LEFT, 
+                new Vector2f(8f, 16f), new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
         
         gl.glBindVertexArray(0);
         gl.glUseProgram(0);
@@ -312,7 +262,12 @@ public class SpriteMaster {
     // ++++ ++++ Game Logic ++++ ++++
     
     public void update(GLAutoDrawable drawable, long elapsedTime) {
-        //TODO: Store static reference to GLAutoDrawable, updated every update loop?
+        
+        InputMaster in = InputMaster.getInstance();
+        if (in.isKeyUp(KeyEvent.VK_ESCAPE)) {
+            //TODO: Pause Menu
+            System.exit(0);
+        }
         
         enemiesDisposal = new LinkedList<Enemy>();
         effectsDisposal = new LinkedList<Effect>();
@@ -336,10 +291,6 @@ public class SpriteMaster {
         }
         
         //Update actors
-        //TODO Commented out until we actually have bunkers.
-//        for (Bunker b : bunkers) {
-//            b.update(drawable, elapsedTime);
-//        }
         for (Enemy e : enemies) {
             e.update(drawable, elapsedTime);
             if (e.getHealth() <= 0) {
@@ -362,7 +313,6 @@ public class SpriteMaster {
         //Dispose of dead objects
         for (Enemy e : enemiesDisposal) {
             enemies.remove(e);
-            score++;
         }
         for (Effect e : effectsDisposal) {
             effects.remove(e);
@@ -370,5 +320,65 @@ public class SpriteMaster {
         for (Projectile p : projectilesDisposal) {
             projectiles.remove(p);
         }
+    }
+    
+    // ++++ ++++ Accessors ++++ ++++
+    
+    public int getWave() {
+        return wave;
+    }
+    
+    public int getScore() {
+        return score;
+    }
+    
+    public int getDepthUniform() {
+        return depthUniform;
+    }
+    
+    public int getModelUniform() {
+        return modelUniform;
+    }
+    
+    public int getTintUniform() {
+        return tintUniform;
+    }
+
+    public Matrix4f getView() {
+        return view;
+    }
+    
+    public Player getPlayer() {
+        return player;
+    }
+    
+    public LinkedList<Enemy> getEnemies() {
+        return enemies;
+    }
+    
+    public LinkedList<Projectile> getProjectiles() {
+        return projectiles;
+    }
+    
+    public LinkedList<Effect> getEffects() {
+        return effects;
+    }
+    
+    public int getVao() {
+        return vao;
+    }
+    
+    public int getShaderProgram() {
+        return shaderProgram;
+    }
+    
+    public int loadTexture(GLAutoDrawable drawable, String filename) {
+        return textureMaster.loadTexturePng(drawable, filename);
+    }
+    
+    // ++++ ++++ Mutators ++++ ++++
+
+    public void addScore(int points) {
+        score += points;
     }
 }

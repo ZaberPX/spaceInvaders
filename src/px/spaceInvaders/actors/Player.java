@@ -54,10 +54,6 @@ public class Player extends Pawn {
             //TODO: Shoot missile.
             System.out.println("Missile Fired!");
         }
-        if (in.isKeyUp(KeyEvent.VK_ESCAPE)) {
-            //TODO: Pause Menu
-            System.exit(0);
-        }
         
         if (movement.lengthSquared() > 0) {
             movement = movement.normalise(null);
@@ -93,7 +89,7 @@ public class Player extends Pawn {
     public void shoot(GLAutoDrawable drawable) {
         if (gunCooldown < 1) {
             master.getProjectiles().add(new Projectile(drawable, master, this, 
-                    new Vector2f(this.location.x + 4f, this.location.y + 32f), 
+                    new Vector2f(this.location.x - 4f, this.location.y + 32f), 
                     "res/textures/Bullet.png", new Vector2f(6f, 6f), 
                     new Vector2f(8f, 32f), 0.6f, 800f,  new Vector2f(0f, 1f), 
                     new Vector2f(0, -32), 5000));

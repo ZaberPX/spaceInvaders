@@ -8,6 +8,7 @@ import javax.media.opengl.GLAutoDrawable;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 /**TODO Class Description and all Methods
  * @author Michael Stopa */
@@ -31,6 +32,8 @@ public class Sprite {
     protected Vector2f drawSize;
     protected Matrix4f scaleMatrix;
     protected int modelUniform;
+    protected Vector4f tint = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+    protected int tintUniform;
     protected float depth;
     protected int depthUniform;
     
@@ -61,6 +64,7 @@ public class Sprite {
                 new Matrix4f(), null);
         this.location = location;
         this.modelUniform = master.getModelUniform();
+        this.tintUniform = master.getTintUniform();
         this.depth = depth;
         this.depthUniform = master.getDepthUniform();
     }
@@ -86,6 +90,9 @@ public class Sprite {
     public boolean collidesWith(Sprite other) {
         //Don't hit yourself, silly.
         if (this == other) {
+            return false;
+        }
+        if (this.getHitSize() == null || other.getHitSize() == null) {
             return false;
         }
         
@@ -116,6 +123,7 @@ public class Sprite {
         
         gl.glBindTexture(GL4.GL_TEXTURE_2D, texture);
         gl.glUniform1f(depthUniform, depth);
+        gl.glUniform4f(tintUniform, tint.x, tint.y, tint.z, tint.w);
         
         //Setup Model matrix
         //Scale

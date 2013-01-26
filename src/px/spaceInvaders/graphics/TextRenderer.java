@@ -13,6 +13,7 @@ import org.lwjgl.util.vector.Vector4f;
 /**TODO Class Description and all Methods
  * @author Michael Stopa */
 class TextRenderer {
+    //TODO Make Textrenderer independent of SpriteMaster.
     
     // ++++ ++++ Enum ++++ ++++
     

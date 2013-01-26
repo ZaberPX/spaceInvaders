@@ -5,7 +5,8 @@ in vec2 texcoord2;
 out vec4 outColor;
 
 uniform sampler2D tex;
+uniform vec4 tint;
 
 void main() {
-    outColor = texture(tex, texcoord2);
+    outColor = tint * texture(tex, texcoord2);
 }

@@ -57,21 +57,22 @@ public class Projectile extends Sprite {
         for (Projectile p: master.getProjectiles()) {
             if (this.collidesWith(p)) {
                 detonate();
+                p.detonate();
             }
         }
         if (parent instanceof Player) {
         	for (Enemy e: master.getEnemies()) {
         	    if (this.collidesWith(e)) {
-        	        detonate();
-        	        e.dealDamage(10);
+        	        if (e.getHealth() > 0) {
+        	            detonate();
+        	            e.dealDamage(50);
+        	            if (e.getHealth() <= 0) {
+        	                master.addScore(1);
+        	            }
+        	        }
         	    }
         	}
         } else if (parent instanceof Enemy) {
-            for (Bunker b: master.getBunkers()) {
-                if (this.collidesWith(b)) {
-                    detonate();
-                }
-            }
             if (this.collidesWith(master.getPlayer())) {
                 detonate();
             }
@@ -81,6 +82,16 @@ public class Projectile extends Sprite {
     /**TODO: removes this projectile and spawns an explosion. */
     public void detonate() {
         //System.out.println("Hit on Enemy");
-        //TODO: Spawn an explosion effect to actually deal the damage.
+        //TODO: Spawn an explosion effect
+        lifetime = 0;//Flag for disposal.
+    }
+    
+    @Override
+    public boolean collidesWith(Sprite other) {
+        if (lifetime <= 0) {
+            return false;
+        } else {
+            return super.collidesWith(other);
+        }
     }
 }
