@@ -171,9 +171,9 @@ class TextRenderer {
             gl.glDrawArrays(GL4.GL_TRIANGLE_STRIP, 0, 4);
         }
 
+        gl.glBindVertexArray(0);
+        gl.glUseProgram(0);
         gl.glBindTexture(GL4.GL_TEXTURE_2D, 0);
-        gl.glBindVertexArray(master.getVao());
-        gl.glUseProgram(master.getShaderProgram());
     }
     
     /**As above, but white text with characters 16 points tall and 8 wide.
@@ -342,9 +342,9 @@ class TextRenderer {
             return new Vector2f(0.75f,  0.75f);
         case '>':
             return new Vector2f(0.875f, 0.75f);
-        case ':':
-            return new Vector2f(0f,     0.875f);
         case ';':
+            return new Vector2f(0f,     0.875f);
+        case ':':
             return new Vector2f(0.125f, 0.875f);
         case '\'':
             return new Vector2f(0.25f,  0.875f);

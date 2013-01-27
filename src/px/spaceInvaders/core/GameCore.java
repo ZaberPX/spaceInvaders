@@ -11,8 +11,8 @@ public class GameCore {
     public enum Mode {
         IN_GAME,
         PAUSED,
-        LOADING,
-        IN_MENU
+        MAIN_MENU,
+        GAME_OVER
     }
     
     // ++++ ++++ Data ++++ ++++
@@ -21,16 +21,6 @@ public class GameCore {
     
     private Mode mode;
     private Frame frame;
-    
-    // ++++ ++++ Accessors ++++ ++++
-    
-    public GLCanvas getCanvas() {
-        return frame.getCanvas();
-    }
-    
-    public Mode getMode() {
-        return mode;
-    }
     
     /**
      * @param args Command-line Arguments */
@@ -45,6 +35,22 @@ public class GameCore {
         frame.setVisible(true);
         FrameControl.centerFrame(frame);
         
-        mode = Mode.LOADING;
+        mode = Mode.MAIN_MENU;
+    }
+    
+    // ++++ ++++ Accessors ++++ ++++
+    
+    public GLCanvas getCanvas() {
+        return frame.getCanvas();
+    }
+    
+    public Mode getMode() {
+        return mode;
+    }
+    
+    // ++++ ++++ Mutators ++++ ++++
+    
+    public void setMode(Mode mode) {
+        this.mode = mode;
     }
 }

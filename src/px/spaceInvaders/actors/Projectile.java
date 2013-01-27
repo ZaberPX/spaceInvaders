@@ -65,7 +65,7 @@ public class Projectile extends Sprite {
         	    if (this.collidesWith(e)) {
         	        if (e.getHealth() > 0) {
         	            detonate();
-        	            e.dealDamage(50);
+        	            e.dealDamage(80);
         	            if (e.getHealth() <= 0) {
         	                master.addScore(1);
         	            }

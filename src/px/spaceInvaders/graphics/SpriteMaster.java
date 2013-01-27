@@ -1,6 +1,5 @@
 package px.spaceInvaders.graphics;
 
-import java.awt.event.KeyEvent;
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.Random;
@@ -17,7 +16,8 @@ import px.spaceInvaders.actors.Effect;
 import px.spaceInvaders.actors.Enemy;
 import px.spaceInvaders.actors.Player;
 import px.spaceInvaders.actors.Projectile;
-import px.spaceInvaders.core.InputMaster;
+import px.spaceInvaders.core.GameCore;
+import px.spaceInvaders.core.GameCore.Mode;
 
 /**TODO Class Description and all Methods
  * @author Michael Stopa */
@@ -135,8 +135,6 @@ public class SpriteMaster {
         
         //Setup TextRenderer
         textRenderer = new TextRenderer(drawable, this, "res/text/Text.png");
-        
-        init(drawable);
     }
     
     // ++++ ++++ Game Control ++++ ++++
@@ -182,7 +180,6 @@ public class SpriteMaster {
             }
         }
         wave++;
-        score++;
     }
     
     // ++++ ++++ Disposal ++++ ++++
@@ -204,10 +201,8 @@ public class SpriteMaster {
         
         gl.glBindVertexArray(vao);
         gl.glUseProgram(shaderProgram);
+        gl.glUniform4f(tintUniform, 1f, 1f, 1f, 1f);
 
-//        for (Bunker b : bunkers) {
-//            b.draw(drawable);
-//        }
         for (Enemy e : enemies) {
             e.draw(drawable);
         }
@@ -223,18 +218,18 @@ public class SpriteMaster {
         drawQuad(drawable, player.getTexture(), 0.9f, new Vector2f(16, 16), 
                 new Vector2f(trackerPosition, 0f));//*/
         
-        textRenderer.drawString(drawable, "Score: " + score, new Vector2f(-128f, -128f), 
-                0.9f, TextRenderer.Align.LEFT, new Vector2f(8f, 16f), 
-                new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
-        textRenderer.drawString(drawable, "Wave: " + wave, new Vector2f(128f, -128f), 
+        gl.glBindVertexArray(0);
+        gl.glUseProgram(0);
+        
+        textRenderer.drawString(drawable, "Score: " + score, new Vector2f(-120f, -128f), 
                 0.9f, TextRenderer.Align.LEFT, new Vector2f(8f, 16f), 
                 new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
         textRenderer.drawString(drawable, "Health: " + player.getHealth(), 
-                new Vector2f(384f, -128f), 0.9f, TextRenderer.Align.LEFT, 
+                new Vector2f(435f, -128f), 0.9f, TextRenderer.Align.LEFT, 
                 new Vector2f(8f, 16f), new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
-        
-        gl.glBindVertexArray(0);
-        gl.glUseProgram(0);
+        textRenderer.drawString(drawable, "Wave: " + wave, new Vector2f(1010f, -128f), 
+                0.9f, TextRenderer.Align.LEFT, new Vector2f(8f, 16f), 
+                new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
     }
     
     public void drawQuad(GLAutoDrawable drawable, int texture, float depth, 
@@ -262,63 +257,60 @@ public class SpriteMaster {
     // ++++ ++++ Game Logic ++++ ++++
     
     public void update(GLAutoDrawable drawable, long elapsedTime) {
-        
-        InputMaster in = InputMaster.getInstance();
-        if (in.isKeyUp(KeyEvent.VK_ESCAPE)) {
-            //TODO: Pause Menu
-            System.exit(0);
-        }
-        
-        enemiesDisposal = new LinkedList<Enemy>();
         effectsDisposal = new LinkedList<Effect>();
-        projectilesDisposal = new LinkedList<Projectile>();
         
-        //Update tracker
-        float movement = trackerDirection * (Enemy.BASE_ACCEL + wave / 10f);
-        trackerDisplacement += movement;
-        if (Math.abs(trackerDisplacement) > Enemy.BASE_SPEED + wave) {
-            trackerDisplacement = Math.signum(trackerDisplacement) 
-                    * (Enemy.BASE_SPEED + wave);
-        }
-        trackerPosition += trackerDisplacement * (elapsedTime / 1000f);
-        if (trackerPosition < 0 && trackerDirection != 1f) {
-            trackerDirection = 1f;
-            spawnWave(drawable);
-        }
-        if (trackerPosition > trackerColumnWidth && trackerDirection != -1f) {
-            trackerDirection = -1f;
-            spawnWave(drawable);
-        }
-        
-        //Update actors
-        for (Enemy e : enemies) {
-            e.update(drawable, elapsedTime);
-            if (e.getHealth() <= 0) {
-                enemiesDisposal.add(e);
+        if (GameCore.instance.getMode() == Mode.IN_GAME) {
+            enemiesDisposal = new LinkedList<Enemy>();
+            projectilesDisposal = new LinkedList<Projectile>();
+            
+            //Update tracker
+            float movement = trackerDirection * (Enemy.BASE_ACCEL + wave / 10f);
+            trackerDisplacement += movement;
+            if (Math.abs(trackerDisplacement) > Enemy.BASE_SPEED + wave) {
+                trackerDisplacement = Math.signum(trackerDisplacement) 
+                        * (Enemy.BASE_SPEED + wave);
             }
-        }
-        player.update(drawable, elapsedTime);
-        for (Projectile p : projectiles) {
-            p.update(drawable, elapsedTime);
-            if (p.getLifetime() <= 0) {
-                projectilesDisposal.add(p);
+            trackerPosition += trackerDisplacement * (elapsedTime / 1000f);
+            if (trackerPosition < 0 && trackerDirection != 1f) {
+                trackerDirection = 1f;
+                spawnWave(drawable);
+            }
+            if (trackerPosition > trackerColumnWidth && trackerDirection != -1f) {
+                trackerDirection = -1f;
+                spawnWave(drawable);
             }
             
-        }
-        for (Effect e : effects) {
-            e.update(drawable, elapsedTime);
-            //Check for death based on lifetime.
+            //Update actors
+            for (Enemy e : enemies) {
+                e.update(drawable, elapsedTime);
+                if (e.getHealth() <= 0) {
+                    enemiesDisposal.add(e);
+                }
+            }
+            player.update(drawable, elapsedTime);
+            for (Projectile p : projectiles) {
+                p.update(drawable, elapsedTime);
+                if (p.getLifetime() <= 0) {
+                    projectilesDisposal.add(p);
+                }
+                
+            }
+            
+            //Dispose of dead objects
+            for (Enemy e : enemiesDisposal) {
+                enemies.remove(e);
+            }
+            for (Projectile p : projectilesDisposal) {
+                projectiles.remove(p);
+            }
         }
         
-        //Dispose of dead objects
-        for (Enemy e : enemiesDisposal) {
-            enemies.remove(e);
+        for (Effect e : effects) {
+            e.update(drawable, elapsedTime);
+            //TODO Check for death based on lifetime.
         }
         for (Effect e : effectsDisposal) {
             effects.remove(e);
-        }
-        for (Projectile p : projectilesDisposal) {
-            projectiles.remove(p);
         }
     }
     

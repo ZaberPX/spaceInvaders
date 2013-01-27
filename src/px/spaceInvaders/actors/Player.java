@@ -25,7 +25,7 @@ public class Player extends Pawn {
     // ++++ ++++ Initialization ++++ ++++
 
     public Player(GLAutoDrawable drawable, SpriteMaster master) {
-        super(drawable, master, "res/textures/PlayerTank.png", new Vector2f(0, -64f), 
+        super(drawable, master, "res/textures/PlayerTank.png", new Vector2f(480f, -64f), 
                 new Vector2f(50f, 50f), new Vector2f(64f, 64f), 0.5f, 100);
         // TODO Auto-generated constructor stub
     }
@@ -49,10 +49,6 @@ public class Player extends Pawn {
         }
         if (in.isKeyDown(KeyEvent.VK_SPACE)) {
             shoot(drawable);
-        }
-        if (in.isKeyUp(KeyEvent.VK_SHIFT)) {
-            //TODO: Shoot missile.
-            System.out.println("Missile Fired!");
         }
         
         if (movement.lengthSquared() > 0) {

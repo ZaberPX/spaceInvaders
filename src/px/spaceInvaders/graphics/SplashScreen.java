@@ -25,6 +25,8 @@ public class SplashScreen {
     private int positionAttribute;
     private int texcoordAttribute;
     
+    private int tintUniform;
+    
     private int shaderProgram;
     
     // ++++ ++++ Initialization ++++ ++++
@@ -42,6 +44,8 @@ public class SplashScreen {
         shaderProgram = ShaderLoader.loadShaders(drawable, 
                 "res/shaders/vertexPlain.glsl", "res/shaders/fragment.glsl");
         gl.glUseProgram(shaderProgram);
+        
+        tintUniform = gl.glGetUniformLocation(shaderProgram, "tint");
         
         float[] vertices = {
                 //Position         //Texcoord
@@ -129,6 +133,7 @@ public class SplashScreen {
         gl.glBindVertexArray(vao);
         gl.glUseProgram(shaderProgram);
         gl.glBindTexture(GL4.GL_TEXTURE_2D, tex);
+        gl.glUniform4f(tintUniform, 1f, 1f, 1f, 1f);
         
         gl.glDrawArrays(GL4.GL_TRIANGLE_STRIP, 0, 4);
         

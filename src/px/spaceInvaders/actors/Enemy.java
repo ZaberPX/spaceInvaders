@@ -54,6 +54,12 @@ public class Enemy extends Pawn {
         } else if (location.x > startingX + COLUMN_WIDTH && direction != -1f) {
             direction = -1f;
         }
+        
+        if (location.y < -32f) {
+            //TODO Spawn Invasion Effect
+            master.getPlayer().dealDamage(5);
+            health = 0;
+        }
     }
     
     @Override
