@@ -9,6 +9,7 @@ import org.lwjgl.util.vector.Vector4f;
 
 import com.jogamp.newt.event.KeyEvent;
 
+import px.spaceInvaders.actors.Effect;
 import px.spaceInvaders.core.GameCore;
 import px.spaceInvaders.core.GameCore.Mode;
 import px.spaceInvaders.core.InputMaster;
@@ -87,6 +88,18 @@ public class Renderer implements GLEventListener {
             
             if (mode == Mode.IN_GAME && spriteMaster.getPlayer().getHealth() < 1) {
                 GameCore.instance.setMode(Mode.GAME_OVER);
+                //Spawn explosion
+                Animation a = new Animation(drawable, spriteMaster, new String[] {
+                        "res/textures/effects/Explosion0.png",
+                        "res/textures/effects/Explosion1.png",
+                        "res/textures/effects/Explosion2.png",
+                        "res/textures/effects/Explosion3.png",
+                        "res/textures/effects/Explosion4.png"
+                }, 150);
+                Effect ef = new Effect(drawable, spriteMaster, a, 
+                        spriteMaster.getPlayer().getLocation(), 
+                        new Vector2f(128f, 128f), 0.65f);
+                spriteMaster.getEffects().add(ef);
             }
         }
         
@@ -99,6 +112,15 @@ public class Renderer implements GLEventListener {
             spriteMaster.textRenderer.drawString(drawable, "INVADERS FROM SPACE!", 
                     new Vector2f(480f, 340f), 0.9f, TextRenderer.Align.CENTER, 
                     new Vector2f(32f, 64f), new Vector4f(0.6f, 1.0f, 1.0f, 1.0f));
+            spriteMaster.textRenderer.drawString(drawable, 
+                    "A video game by Michael Stopa, written in Java and OpenGL 4", 
+                    new Vector2f(480f, 240f), 0.9f, TextRenderer.Align.CENTER, 
+                    new Vector2f(8f, 16f), new Vector4f(0.6f, 1.0f, 1.0f, 1.0f));
+            spriteMaster.textRenderer.drawString(drawable, 
+                    "Uses lwjgl-util and TWL's PNGDecoder Libraries, with JOGL " +
+                    "bindings from Jogamp", 
+                    new Vector2f(480f, 220f), 0.9f, TextRenderer.Align.CENTER, 
+                    new Vector2f(8f, 16f), new Vector4f(0.6f, 1.0f, 1.0f, 1.0f));
             spriteMaster.textRenderer.drawString(drawable, 
                     "Press <ENTER> to start a new game", 
                     new Vector2f(0f, 120f), 0.9f, TextRenderer.Align.LEFT, 
@@ -129,19 +151,26 @@ public class Renderer implements GLEventListener {
                 spriteMaster.init(drawable);
                 GameCore.instance.setMode(Mode.IN_GAME);
             }
+            if (in.isKeyUp(KeyEvent.VK_ESCAPE)) {
+                GameCore.instance.setMode(Mode.MAIN_MENU);
+            }
             spriteMaster.textRenderer.drawString(drawable, "INVADERS FROM SPACE!", 
                     new Vector2f(480f, 440f), 0.9f, TextRenderer.Align.CENTER, 
                     new Vector2f(16f, 32f), new Vector4f(0.6f, 1.0f, 1.0f, 1.0f));
             spriteMaster.textRenderer.drawString(drawable, 
                     "Final Score: " + spriteMaster.getScore(), 
                     new Vector2f(480f, 240f), 0.9f, TextRenderer.Align.CENTER, 
-                    new Vector2f(24f, 48f), new Vector4f(0.6f, 1.0f, 1.0f, 1.0f));
+                    new Vector2f(32f, 64f), new Vector4f(0.6f, 1.0f, 1.0f, 1.0f));
+            spriteMaster.textRenderer.drawString(drawable, 
+                    "Press <ESCAPE> to return to the main menu.", 
+                    new Vector2f(480f, 30f), 0.9f, TextRenderer.Align.CENTER, 
+                    new Vector2f(12f, 24f), new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
             spriteMaster.textRenderer.drawString(drawable, 
                     "Press <ENTER> to start a new game", 
                     new Vector2f(480f, 0f), 0.9f, TextRenderer.Align.CENTER, 
                     new Vector2f(12f, 24f), new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
             spriteMaster.textRenderer.drawString(drawable, 
-                    "Press <Alt + F4> to quit", 
+                    "Press <Alt + F4>, or close the window to quit", 
                     new Vector2f(480f, -30f), 0.9f, TextRenderer.Align.CENTER, 
                     new Vector2f(12f, 24f), new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
         } else if (mode == Mode.IN_GAME) {
@@ -172,15 +201,18 @@ public class Renderer implements GLEventListener {
                 new Vector2f(580f, 80f), 0.9f, TextRenderer.Align.LEFT, 
                 new Vector2f(8f, 16f), new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
         spriteMaster.textRenderer.drawString(drawable, 
-                "Press <Alt + F4> at any time to quit", 
+                "Press <Alt + F4>, or close the window at any time to quit", 
                 new Vector2f(580f, 60f), 0.9f, TextRenderer.Align.LEFT, 
+                new Vector2f(8f, 16f), new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
+        spriteMaster.textRenderer.drawString(drawable, 
+                "PS. Don't let the invaders land!", 
+                new Vector2f(580f, 30f), 0.9f, TextRenderer.Align.LEFT, 
                 new Vector2f(8f, 16f), new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
     }
     
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width,
             int height) {
-        //TODO Reshape Projection matrix for resizing screen.
-        //Then again: I haven't set up for resizing this time around, may not need proj
+        //As the game is locked to 720p, I don't really need to worry about this.
     }
 }

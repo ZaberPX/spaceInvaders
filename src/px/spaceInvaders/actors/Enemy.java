@@ -4,6 +4,7 @@ import javax.media.opengl.GLAutoDrawable;
 
 import org.lwjgl.util.vector.Vector2f;
 
+import px.spaceInvaders.graphics.Animation;
 import px.spaceInvaders.graphics.SpriteMaster;
 
 /**TODO Class Description and all Methods
@@ -18,12 +19,15 @@ public class Enemy extends Pawn {
     public static final float COLUMN_WIDTH = 256f;
     public static final Vector2f BASE_MOVEMENT = 
             (Vector2f) new Vector2f(4f, -1f).normalise();
+    public static final int GUN_COOLDOWN_MAX = 200;
     
     // ++++ ++++ Data ++++ ++++
     
     protected Vector2f movement;
     protected float startingX;
     protected float direction;
+
+    protected int gunCooldown = GUN_COOLDOWN_MAX;
     
     // ++++ ++++ Initialization ++++ ++++
 
@@ -33,6 +37,14 @@ public class Enemy extends Pawn {
         super(drawable, master, texture, location, hitSize, drawSize, depth, health);
         startingX = location.x;
         direction = 1f;
+        Animation a = new Animation(drawable, master, new String[] {
+                "res/textures/effects/TeleportIn0.png",
+                "res/textures/effects/TeleportIn1.png",
+                "res/textures/effects/TeleportIn2.png"
+        }, 100);
+        Effect e = new Effect(drawable, master, a, location, new Vector2f(64f, 64f), 
+                0.65f);
+        master.getEffects().add(e);
     }
     
     // ++++ ++++ Game Logic ++++ ++++
@@ -47,6 +59,18 @@ public class Enemy extends Pawn {
             displacement.normalise().scale(BASE_SPEED + master.getWave());
         }
         
+        gunCooldown -= elapsedTime;
+        if (gunCooldown < 0) {
+            if (SpriteMaster.random.nextInt(50) == 0) {
+                master.getProjectiles().add(new Projectile(drawable, master, this, 
+                        new Vector2f(this.location.x, this.location.y - 32f), 
+                        "res/textures/BulletEnemy.png", new Vector2f(6f, 6f), 
+                        new Vector2f(8f, 32f), 0.6f, 400f,  new Vector2f(0f, -1f), 
+                        new Vector2f(0f, 32f), 5000));
+            }
+            gunCooldown = GUN_COOLDOWN_MAX;
+        }
+        
         super.update(drawable, elapsedTime);
         
         if (location.x < startingX && direction != 1f) {
@@ -56,15 +80,22 @@ public class Enemy extends Pawn {
         }
         
         if (location.y < -32f) {
-            //TODO Spawn Invasion Effect
+            //Spawn Invasion Effect
             master.getPlayer().dealDamage(5);
             health = 0;
+            Animation a = new Animation(drawable, master, new String[] {
+                    "res/textures/effects/TeleportOut0.png",
+                    "res/textures/effects/TeleportOut1.png",
+                    "res/textures/effects/TeleportOut2.png"
+            }, 100);
+            Effect e = new Effect(drawable, master, a, location, new Vector2f(64f, 64f), 
+                    0.65f);
+            master.getEffects().add(e);
         }
     }
     
     @Override
     public void dealDamage(int damage) {
         super.dealDamage(damage);
-        //TODO: if dead, spawn effect, give points, chance to drop powerup.
     }
 }

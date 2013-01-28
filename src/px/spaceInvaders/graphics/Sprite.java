@@ -56,7 +56,9 @@ public class Sprite {
     public Sprite(GLAutoDrawable drawable, SpriteMaster master, String texture, 
             Vector2f location, Vector2f hitSize, Vector2f drawSize, float depth) {
         this.master = master;
-        this.texture = master.loadTexture(drawable, texture);
+        if (texture != null) {
+            this.texture = master.loadTexture(drawable, texture);
+        }
         this.location = location;
         this.hitSize = hitSize;
         this.drawSize = drawSize;
@@ -74,8 +76,6 @@ public class Sprite {
     /**
      * @param elapsedTime Number of milliseconds elapsed since last update cycle. */
     public void update(GLAutoDrawable drawable, long elapsedTime) {
-    	/*TODO Idea: reorganize Sprites to have current and last location, render based on
-    	 * "current" location edited during the game loop.*/
         location = Vector2f.add((Vector2f) 
                 new Vector2f(displacement).scale((float)elapsedTime / 1000f), 
                 location, null);

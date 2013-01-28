@@ -52,7 +52,7 @@ public class ShaderLoader {
                 fragmentShader += fragmentScanner.nextLine() + "\n";
             }
         } catch (FileNotFoundException e) {
-            // TODO Shaders not found
+            //Shaders not found
             e.printStackTrace();
             System.exit(-1);
         } finally {

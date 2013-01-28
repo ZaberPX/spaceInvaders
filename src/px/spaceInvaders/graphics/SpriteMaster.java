@@ -307,7 +307,9 @@ public class SpriteMaster {
         
         for (Effect e : effects) {
             e.update(drawable, elapsedTime);
-            //TODO Check for death based on lifetime.
+            if (e.isDead()) {
+                effectsDisposal.add(e);
+            }
         }
         for (Effect e : effectsDisposal) {
             effects.remove(e);

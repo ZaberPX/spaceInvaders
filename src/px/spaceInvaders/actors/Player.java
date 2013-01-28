@@ -81,6 +81,13 @@ public class Player extends Pawn {
         }
     }
     
+    @Override
+    public void draw(GLAutoDrawable drawable) {
+        if (health > 0) {
+            super.draw(drawable);
+        }
+    }
+    
     /**Fires a projectile up at the aliens. */
     public void shoot(GLAutoDrawable drawable) {
         if (gunCooldown < 1) {
@@ -88,7 +95,7 @@ public class Player extends Pawn {
                     new Vector2f(this.location.x - 4f, this.location.y + 32f), 
                     "res/textures/Bullet.png", new Vector2f(6f, 6f), 
                     new Vector2f(8f, 32f), 0.6f, 800f,  new Vector2f(0f, 1f), 
-                    new Vector2f(0, -32), 5000));
+                    new Vector2f(0f, -32f), 5000));
             gunCooldown = gunCooldownMax;
         }
     }
