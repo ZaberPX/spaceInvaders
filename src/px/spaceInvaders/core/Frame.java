@@ -12,7 +12,8 @@ import px.spaceInvaders.graphics.Renderer;
 
 import com.jogamp.opengl.util.FPSAnimator;
 
-/**TODO Class Description and all Methods
+/**Central frame containing the OpenGL drawable GLCanvas
+ * 
  * @author Michael Stopa */
 @SuppressWarnings("serial")
 public class Frame extends JFrame {
@@ -25,10 +26,12 @@ public class Frame extends JFrame {
     
     // ++++ ++++ Accessors ++++ ++++
     
+    /**@return GLCanvas object currently used for OpenGL drawing. */
     public GLCanvas getCanvas() {
         return glCanvas;
     }
     
+    /**@return Current Renderer object drawing to the GLCanvas */
     public Renderer getRenderer() {
         return renderer;
     }

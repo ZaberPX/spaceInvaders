@@ -7,7 +7,8 @@ import org.lwjgl.util.vector.Vector2f;
 import px.spaceInvaders.graphics.Animation;
 import px.spaceInvaders.graphics.SpriteMaster;
 
-/**TODO Class Description and all Methods
+/**A Space Invader!
+ * 
  * @author Michael Stopa */
 public class Enemy extends Pawn {
     
@@ -31,6 +32,15 @@ public class Enemy extends Pawn {
     
     // ++++ ++++ Initialization ++++ ++++
 
+    /**Creates a new enemy object.
+     * @param drawable Current OpenGL context.
+     * @param master SpriteMaster for administering this object.
+     * @param texture Filename of texture used to represent this object in-game.
+     * @param location Location of this object in world-coordinates
+     * @param hitSize Size of this object's collision box.
+     * @param drawSize Size of this object when drawn on screen, in world coordinates.
+     * @param depth Z-depth of this object (RHS, 1.0 to -1.0)
+     * @param health Amount of hit-points this enemy starts with. */
     public Enemy(GLAutoDrawable drawable, SpriteMaster master, String texture,
             Vector2f location, Vector2f hitSize, Vector2f drawSize, float depth,
             int health) {
@@ -49,6 +59,9 @@ public class Enemy extends Pawn {
     
     // ++++ ++++ Game Logic ++++ ++++
     
+    /**Updates the game state of this object.
+     * @param drawable Current OpenGL context.
+     * @param elapsedTime number of milliseconds since last update loop. */
     @Override
     public void update(GLAutoDrawable drawable, long elapsedTime) {
         
@@ -92,10 +105,5 @@ public class Enemy extends Pawn {
                     0.65f);
             master.getEffects().add(e);
         }
-    }
-    
-    @Override
-    public void dealDamage(int damage) {
-        super.dealDamage(damage);
     }
 }

@@ -12,7 +12,10 @@ import javax.media.opengl.GLAutoDrawable;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 
-/**TODO Class Description and all Methods
+/**Handles all texture loading through TWL's PNGDecoder. Automatically stores all
+ * retrieved textures, re-using the same references when the same texture is requested
+ * multiple times so as not to have multiple instances of the same image laoded in
+ * memory.
  * @author Michael Stopa */
 public class TextureMaster {
     
@@ -63,7 +66,10 @@ public class TextureMaster {
             decoder.decode(buf, width * 4, Format.RGBA);
             buf.flip();
         } catch (IOException e) {
-            //TODO handle this case more elegantly
+            System.out.println("============================================\n" +
+                    "COULD NOT LOAD TEXTURE: " + filename + "\n" +
+                    "This file might be missing/corrupted/moved/renamed\n" +
+                    "============================================\n");
             e.printStackTrace();
             System.exit(-1);
         }

@@ -9,7 +9,7 @@ import org.lwjgl.util.vector.Vector2f;
 import px.spaceInvaders.core.InputMaster;
 import px.spaceInvaders.graphics.SpriteMaster;
 
-/**TODO Class Description and all Methods
+/**A playable character.
  * @author Michael Stopa */
 public class Player extends Pawn {
     
@@ -24,14 +24,22 @@ public class Player extends Pawn {
     
     // ++++ ++++ Initialization ++++ ++++
 
+    /**Creates a new player object, automatically starts at (480, -64), with a collision
+     * size of (50, 50), and a size on screen of (64, 64), drawn at z-depth 0.5f and
+     *  100 points of health. Uses res/textures/PlayerTank.png as it's texture.
+     * @param drawable
+     * @param master SpriteMaster object administering this object. */
     public Player(GLAutoDrawable drawable, SpriteMaster master) {
         super(drawable, master, "res/textures/PlayerTank.png", new Vector2f(480f, -64f), 
                 new Vector2f(50f, 50f), new Vector2f(64f, 64f), 0.5f, 100);
-        // TODO Auto-generated constructor stub
     }
     
     // ++++ ++++ Game Logic ++++ ++++
     
+    /**Processes input from the keyboard to move this object in addition to other
+     * game-state updates.
+     * @param drawable Current OpenGL context
+     * @param elapsedTime Number of milliseconds since last update cycle. */
     @Override
     public void update(GLAutoDrawable drawable, long elapsedTime) {
         InputMaster in = InputMaster.getInstance();
@@ -81,6 +89,8 @@ public class Player extends Pawn {
         }
     }
     
+    /**Draws this object to the screen. Will not draw if health has dropped below 1.
+     * @param drawable Current OpenGL context */
     @Override
     public void draw(GLAutoDrawable drawable) {
         if (health > 0) {
@@ -88,7 +98,8 @@ public class Player extends Pawn {
         }
     }
     
-    /**Fires a projectile up at the aliens. */
+    /**Fires a projectile up at the aliens.
+     * @param drawable Current OpenGL context. */
     public void shoot(GLAutoDrawable drawable) {
         if (gunCooldown < 1) {
             master.getProjectiles().add(new Projectile(drawable, master, this, 

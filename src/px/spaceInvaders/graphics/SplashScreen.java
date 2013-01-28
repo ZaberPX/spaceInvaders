@@ -12,7 +12,7 @@ import javax.media.opengl.GLAutoDrawable;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 
-/**TODO Class Description and all Methods
+/**Draws the background
  * @author Michael Stopa */
 public class SplashScreen {
     
@@ -31,6 +31,8 @@ public class SplashScreen {
     
     // ++++ ++++ Initialization ++++ ++++
     
+    /**Initializes the background.
+     * @param drawable Current OpenGL context. */
     public SplashScreen(GLAutoDrawable drawable) {
         GL4 gl = drawable.getGL().getGL4();
         int[] temp = new int[1];
@@ -89,7 +91,10 @@ public class SplashScreen {
             decoder.decode(texBuffer, width * 4, Format.RGBA);
             texBuffer.flip();
         } catch (IOException e) {
-            //TODO handle this a little more elgantly
+            System.out.println("============================================\n" +
+            		"COULD NOT LOAD TEXTURE: res/textures/SplashScreen.png\n" + 
+            		"This file might be missing/corrupted/moved/renamed\n" +
+            		"============================================\n");
             e.printStackTrace();
             System.exit(-1);
         }
@@ -112,6 +117,8 @@ public class SplashScreen {
     
     // ++++ ++++ Clean up ++++ ++++
     
+    /**Cleans up non-garbage-collected data.
+     * @param drawable Current OpenGL context.*/
     public void dispose(GLAutoDrawable drawable) {
         GL4 gl = drawable.getGL().getGL4();
         int[] temp = new int[1];
@@ -127,6 +134,8 @@ public class SplashScreen {
     
     // ++++ ++++ Rendering ++++ ++++
     
+    /**Draws the background onto the screen.
+     * @param drawable Current OpenGL context */
     public void draw(GLAutoDrawable drawable) {
         GL4 gl = drawable.getGL().getGL4();
 

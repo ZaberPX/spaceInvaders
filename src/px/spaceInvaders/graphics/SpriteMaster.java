@@ -19,7 +19,7 @@ import px.spaceInvaders.actors.Projectile;
 import px.spaceInvaders.core.GameCore;
 import px.spaceInvaders.core.GameCore.Mode;
 
-/**TODO Class Description and all Methods
+/**Master Game-State object holds all actors and manages their rendering and updating.
  * @author Michael Stopa */
 public class SpriteMaster {
     
@@ -66,8 +66,9 @@ public class SpriteMaster {
     
     // ++++ ++++ Initialization ++++ ++++
     
+    /**Creates a new SpriteMaster object.
+     * @param drawable Current OpenGL context. */
     public SpriteMaster(GLAutoDrawable drawable) {
-        
         if (random == null) {
             random = new Random();
         }
@@ -139,6 +140,8 @@ public class SpriteMaster {
     
     // ++++ ++++ Game Control ++++ ++++
     
+    /**Initializes the game-state for a new game.
+     * @param drawable Current OpenGL context. */
     public void init(GLAutoDrawable drawable) {
         
         score = 0;
@@ -158,7 +161,9 @@ public class SpriteMaster {
         spawnWave(drawable);
     }
     
-    public void spawnWave(GLAutoDrawable drawable) {
+    /**Spawns a new wave of up to 11 Invaders at the top of the screen.
+     * @param drawable Current OpenGl context */
+    protected void spawnWave(GLAutoDrawable drawable) {
         for (int i = 0; i < 11; i++) {
             int result = random.nextInt(4);
             switch (result) {
@@ -184,6 +189,8 @@ public class SpriteMaster {
     
     // ++++ ++++ Disposal ++++ ++++
     
+    /**Cleans up all non-garbage-collected resources.
+     * @param drawable Current OpenGL context. */
     public void dispose(GLAutoDrawable drawable) {
         GL4 gl = drawable.getGL().getGL4();
         int[] temp = new int[1];
@@ -196,6 +203,8 @@ public class SpriteMaster {
     
     // ++++ ++++ Rendering ++++ ++++
     
+    /**Draws all objects administered by this object.
+     * @param drawable Current OpenGL context. */
     public void draw(GLAutoDrawable drawable) {
         GL4 gl = drawable.getGL().getGL4();
         
@@ -232,6 +241,12 @@ public class SpriteMaster {
                 new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
     }
     
+    /**Allows drawing of a simple textured quad to the screen.
+     * @param drawable Current OpenGl context
+     * @param texture OpenGL reference to the texture used on the quad.
+     * @param depth Z-depth to  draw at (RHS 1.0 to -1.0)
+     * @param size Size of quad to draw, in world coordinates.
+     * @param location Location in world coordiantes to draw to. */
     public void drawQuad(GLAutoDrawable drawable, int texture, float depth, 
             Vector2f size, Vector2f location) {
         GL4 gl = drawable.getGL().getGL4();
@@ -256,6 +271,9 @@ public class SpriteMaster {
     
     // ++++ ++++ Game Logic ++++ ++++
     
+    /**Updates the state of all objects in the game.
+     * @param drawable Current OpenGL context
+     * @param elapsedTime Number of milliseconds since last update loop. */
     public void update(GLAutoDrawable drawable, long elapsedTime) {
         effectsDisposal = new LinkedList<Effect>();
         
@@ -318,60 +336,81 @@ public class SpriteMaster {
     
     // ++++ ++++ Accessors ++++ ++++
     
+    /**@return Number of enemy waves spawned since the game started. */
     public int getWave() {
         return wave;
     }
     
+    /**@return Number of invaders destroyed by the player. */
     public int getScore() {
         return score;
     }
     
+    /**@return OpenGl reference to the Depth uniform in the basic shader program. */
     public int getDepthUniform() {
         return depthUniform;
     }
     
+    /**@return OpenGl reference to the Model uniform in the basic shader program. */
     public int getModelUniform() {
         return modelUniform;
     }
     
+    /**@return OpenGl reference to the Depth uniform in the basic shader program. */
     public int getTintUniform() {
         return tintUniform;
     }
 
+    /**@return The current view matirx transform. */
     public Matrix4f getView() {
         return view;
     }
     
+    /**@return Current player object. */
     public Player getPlayer() {
         return player;
     }
     
+    /**@return List of all Enemy objects in the game. */
     public LinkedList<Enemy> getEnemies() {
         return enemies;
     }
     
+    /**@return List of all Projectile objects in the game. */
     public LinkedList<Projectile> getProjectiles() {
         return projectiles;
     }
     
+    /**@return List of all Effect objects in the game. */
     public LinkedList<Effect> getEffects() {
         return effects;
     }
     
+    /**@return Returns the OpenGL reference to the Vertex Array Object used to draw all
+     * sprites in the game. */
     public int getVao() {
         return vao;
     }
     
+    /**@return Returns the OpenGl reference to the Shader Program used to draw all sprites
+     * in the game. */
     public int getShaderProgram() {
         return shaderProgram;
     }
     
+    /**Handles loading of textures from PNG files through the SpriteMaster's 
+     * TextureMaster.
+     * @param drawable Current OpenGL context.
+     * @param filename Filename of the PNG file to load.
+     * @return OpenGL reference to the newly generated texture object. */
     public int loadTexture(GLAutoDrawable drawable, String filename) {
         return textureMaster.loadTexturePng(drawable, filename);
     }
     
     // ++++ ++++ Mutators ++++ ++++
 
+    /**Allows adding and subtracting to the player's score during the game.
+     * @param points Points to add or remove from the player's score. */
     public void addScore(int points) {
         score += points;
     }

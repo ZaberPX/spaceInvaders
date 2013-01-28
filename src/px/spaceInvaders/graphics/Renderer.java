@@ -14,7 +14,8 @@ import px.spaceInvaders.core.GameCore;
 import px.spaceInvaders.core.GameCore.Mode;
 import px.spaceInvaders.core.InputMaster;
 
-/**TODO Class Description and all Methods
+/**Object that renders to an assigned OpenGl context, typically a GLCanvas inside a Frame
+ * object.
  * @author Michael Stopa */
 public class Renderer implements GLEventListener {
     
@@ -26,12 +27,15 @@ public class Renderer implements GLEventListener {
     
     // ++++ ++++ Accessors ++++ ++++
     
+    /**@return The current SpriteMaster object for the game. */
     public SpriteMaster getSpriteMaster() {
         return spriteMaster;
     }
     
     // ++++ ++++ OpenGL Core Functions ++++ ++++
     
+    /**Performs start-up OpenGL operations.
+     * @param drawable Current OpenGL context. */
     @Override
     public void init(GLAutoDrawable drawable) {
         GL4 gl = drawable.getGL().getGL4();
@@ -57,12 +61,18 @@ public class Renderer implements GLEventListener {
         lastTime = System.currentTimeMillis();
     }
     
+    /**Called on program exit to free up all non-garbage-collected objects (eg. OpenGL 
+     * objects).
+     * @param drawable Current OpenGL context. */
     @Override
     public void dispose(GLAutoDrawable drawable) {
         splash.dispose(drawable);
     	spriteMaster.dispose(drawable);
     }
     
+    /**Triggers Rendering of all in-game objects and updates their states. Called 
+     * everytime the GLCanvas draws to the screen.
+     * @param drawable Current OpenGL context. */
     @Override
     public void display(GLAutoDrawable drawable) {
         GL4 gl = drawable.getGL().getGL4();
@@ -184,6 +194,8 @@ public class Renderer implements GLEventListener {
         lastTime = time;
     }
     
+    /**Draws keyboard control instructions to the screen.
+     * @param drawable Current OpenGL context */
     private void drawControls(GLAutoDrawable drawable) {
         spriteMaster.textRenderer.drawString(drawable, "CONTROLS:", 
                 new Vector2f(580f, 150f), 0.9f, TextRenderer.Align.LEFT, 
@@ -210,6 +222,9 @@ public class Renderer implements GLEventListener {
                 new Vector2f(8f, 16f), new Vector4f(0.6f, 1.0f, 0.7f, 1.0f));
     }
     
+    /**Updates the Renderer for drawing to the canvas when it's size or shape changes.
+     * Doesn't actuall ydo anything in this instance because the window is locked to
+     * display at 1280x720. */
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width,
             int height) {

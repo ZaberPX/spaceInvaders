@@ -8,7 +8,7 @@ import px.spaceInvaders.graphics.Animation;
 import px.spaceInvaders.graphics.Sprite;
 import px.spaceInvaders.graphics.SpriteMaster;
 
-/**TODO Class Description and all Methods
+/**A damaging projectile fired by a Pawn.
  * @author Michael Stopa */
 public class Projectile extends Sprite {
     
@@ -21,6 +21,23 @@ public class Projectile extends Sprite {
     
     // ++++ ++++ Initialization ++++ ++++
 
+    /**Constructor used to create a new Projectile object.
+     * @param drawable Current OpenGL context.
+     * @param master SpritmMaster object administering this one.
+     * @param parent Sprite object that fired this projectile, decides whether collision
+     * is checked against invaders or the player.
+     * @param location Location to spawn the new projectile.
+     * @param texture Filename of image used to represent this object.
+     * @param hitSize Size of the object's collision box.
+     * @param drawSize Size of this object when draw to the screen.
+     * @param depth Z-depth of this object in the depth buffer (RHS 1.0 to -1.0)
+     * @param speed Distance this projectile will travel in world coordinates every 
+     * second.
+     * @param direction Direction this projectile will travel. Is automatically
+     * normalized by the constructor.
+     * @param offset Offset of this object's sprite from the center of it's collision box.
+     * @param lifetime Number of milliseconds before this object is automatically 
+     * disposed. */
     public Projectile(GLAutoDrawable drawable, SpriteMaster master, Sprite parent, 
             Vector2f location, String texture, Vector2f hitSize, Vector2f drawSize, 
             float depth, float speed, Vector2f direction, Vector2f offset, int lifetime) {
@@ -41,6 +58,10 @@ public class Projectile extends Sprite {
     
     // ++++ ++++ Game Logic ++++ ++++
     
+    /**Moves the object, checks for collision via the checkCollision method and reduces
+     * the lifetime of the projectile in flight.
+     * @param drawable Current OpenGL context.
+     * @param elapsedTime Number of milliseconds since last update loop. */
     @Override
     public void update(GLAutoDrawable drawable, long elapsedTime) {
         
@@ -54,7 +75,12 @@ public class Projectile extends Sprite {
         super.update(drawable, elapsedTime);
     }
     
-    public void checkCollision(GLAutoDrawable drawable) {
+    /**Checks this projectile against all other projectiles and Enemies or the Player 
+     * (Whichever doesn't include the parent taht fired this projectile), spawning an
+     * explosion when this projectile destroys an Enemy and always drawing an impact
+     * effect when this object does hit something.
+     * @param drawable Current OpenGL context */
+    protected void checkCollision(GLAutoDrawable drawable) {
         for (Projectile p: master.getProjectiles()) {
             if (this.collidesWith(p)) {
                 detonate(drawable);
@@ -92,7 +118,8 @@ public class Projectile extends Sprite {
         }
     }
     
-    /**removes this projectile and spawns an explosion. */
+    /**removes this projectile and spawns an explosion. Effect used is based
+     * on whether the parent object was a Player or an Enemy (Invader). */
     public void detonate(GLAutoDrawable drawable) {
         //System.out.println("Hit on Enemy");
         if (parent instanceof Player) {
@@ -117,6 +144,8 @@ public class Projectile extends Sprite {
         lifetime = 0;//Flag for disposal.
     }
     
+    /**Checks if this object hits the provided sprite.
+     * @param other Sprrite object being comapred with. */
     @Override
     public boolean collidesWith(Sprite other) {
         if (lifetime <= 0) {

@@ -10,13 +10,14 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-/**TODO Class Description and all Methods
+/**Utitity class for printing text to the screen.
  * @author Michael Stopa */
 class TextRenderer {
-    //TODO Make Textrenderer independent of SpriteMaster.
     
     // ++++ ++++ Enum ++++ ++++
     
+    /**Defines how to justify the text.
+     * @author Michael Stopa */
     public enum Align {
         LEFT,
         CENTER,
@@ -40,6 +41,12 @@ class TextRenderer {
     
     // ++++ ++++ Initialization ++++ ++++
     
+    /**Creates a new TextRenderer based on the text bitmap referenced in the 
+     * testMapFilename parameter.
+     * @param drawable Current OpenGL context.
+     * @param master SpriteMaster this object is stored in.
+     * @param textMapFilename File containing character bitmaps used for rendering 
+     * text. */
     public TextRenderer(GLAutoDrawable drawable, SpriteMaster master, 
             String textMapFilename) {
         
@@ -105,6 +112,8 @@ class TextRenderer {
     
     // ++++ ++++ Disposal ++++ ++++
     
+    /**Cleans up all non-grabage-collected resources.
+     * @param drawable Current OpenGL context. */
     public void dispose(GLAutoDrawable drawable) {
         GL4 gl = drawable.getGL().getGL4();
         int[] temp = new int[1];
@@ -116,6 +125,14 @@ class TextRenderer {
     
     // ++++ ++++ Rendering ++++ ++++
     
+    /**Draws a string of text sampled from the bitmap provided at initialization.
+     * @param drawable Current OpenGL context
+     * @param string Text to draw.
+     * @param location Location to draw to.
+     * @param depth Z-depth to draw at.
+     * @param align Text alignment type.
+     * @param characterSize Size of each character in the string.
+     * @param color Color to tint the text with. */
     public void drawString(GLAutoDrawable drawable, String string, Vector2f location, 
             float depth, Align align, Vector2f characterSize, Vector4f color) {
         if (characterSize == null) {

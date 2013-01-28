@@ -10,9 +10,9 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-/**TODO Class Description and all Methods
+/**Base class for all visible objects in the game.
  * @author Michael Stopa */
-public class Sprite {
+public abstract class Sprite {
     
     // ++++ ++++ Data ++++ ++++
     
@@ -37,22 +37,16 @@ public class Sprite {
     protected float depth;
     protected int depthUniform;
     
-    // ++++ ++++ Accessors ++++ ++++
-    
-    public int getTexture() {
-        return texture;
-    }
-
-    public Vector2f getHitSize() {
-        return hitSize;
-    }
-
-    public Vector2f getLocation() {
-        return location;
-    }
-    
     // ++++ ++++ Initialization ++++ ++++
     
+    /**Base constructor handles texture loading and basic setup.
+     * @param drawable Current OpenGL context.
+     * @param master SpriteMaster object administering this one.
+     * @param texture Filename of the iamge used to represent the sprite in game.
+     * @param location Initial location of the sprite in world-coordinates.
+     * @param hitSize Size of this object's collision box.
+     * @param drawSize Size of this object when draw to the screen.
+     * @param depth The object's z-depth (RHS 1.0 to -1.0) */
     public Sprite(GLAutoDrawable drawable, SpriteMaster master, String texture, 
             Vector2f location, Vector2f hitSize, Vector2f drawSize, float depth) {
         this.master = master;
@@ -73,7 +67,8 @@ public class Sprite {
     
     // ++++ ++++ Game Logic ++++ ++++
     
-    /**
+    /**Updates' the sprite's position in the world based on it's current displacement.
+     * @param drawable Current OpenGL context.
      * @param elapsedTime Number of milliseconds elapsed since last update cycle. */
     public void update(GLAutoDrawable drawable, long elapsedTime) {
         location = Vector2f.add((Vector2f) 
@@ -117,8 +112,9 @@ public class Sprite {
     
     // ++++ ++++ Rendering ++++ ++++
     
+    /**Draws the object to the screen.
+     * @param drawable Current OpenGl context. */
     public void draw(GLAutoDrawable drawable) {
-        //TODO if currentAnimation is not null, draw animation instead.
         GL4 gl = drawable.getGL().getGL4();
         
         gl.glBindTexture(GL4.GL_TEXTURE_2D, texture);
@@ -154,5 +150,22 @@ public class Sprite {
         System.out.println("View:\n" + view.toString());
         System.out.println("ModelView:\n" + modelview.toString());
         System.out.println("Breakpoint!");//*/
+    }
+    
+    // ++++ ++++ Accessors ++++ ++++
+    
+    /**@return OpenGL reference number for this object's texture. */
+    public int getTexture() {
+        return texture;
+    }
+
+    /**@return Size of this object's collision box in world-coordinates */
+    public Vector2f getHitSize() {
+        return hitSize;
+    }
+
+    /**@return Current location of this object in world coordinates. */
+    public Vector2f getLocation() {
+        return location;
     }
 }

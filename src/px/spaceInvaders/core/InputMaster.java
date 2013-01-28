@@ -3,7 +3,8 @@ package px.spaceInvaders.core;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-/**TODO Class Description and all Methods
+/**Delightful little class that captures keyboard input and allows polling in Java. Only
+ * supports key codes up to the value of the MAX_KEY_VALUE constant.
  * <br>
  * Based on:http://gpsnippets.blogspot.com.au/2008/03/keyboard-input-polling-system-in-java.html
  * @author Michael Stopa */
@@ -11,6 +12,8 @@ public class InputMaster implements KeyListener {
     
     // ++++ ++++ Constants ++++ ++++
     
+    /**Keys with a KeyEvent.VK_* keycode higher than this constant are not tracked
+     * by the poller. */
     public static final int MAX_KEY_VALUE = 525;
     
     // ++++ ++++ Data ++++ ++++
@@ -79,6 +82,8 @@ public class InputMaster implements KeyListener {
     
     // ++++ ++++ Event Handling ++++ ++++
 
+    /**Processes a received keyPressed event.
+     * @param e Event calling this method. */
     @Override
     public void keyPressed(KeyEvent e) {
         //System.out.println("InputMaster: A key has been pressed, code: " + e.getKeyCode());
@@ -90,7 +95,9 @@ public class InputMaster implements KeyListener {
             keyReleased = false;
         }
     }
-
+    
+    /**Processes a received keyReleased event.
+     * @param e Event calling this method. */
     @Override
     public void keyReleased(KeyEvent e) {
         //System.out.println("InputMaster: A key has been released code: " + e.getKeyCode());
@@ -100,7 +107,9 @@ public class InputMaster implements KeyListener {
         keyPressed = false;
         keyReleased = true;
     }
-
+    
+    /**Processes a received keyTyped event.
+     * @param e Event calling this method. */
     @Override
     public void keyTyped(KeyEvent e) {
         keyCache += e.getKeyChar();
