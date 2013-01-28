@@ -34,11 +34,10 @@ public class GameCore {
     
     /**Private constructor is only called by main() method. */
     private GameCore() {
+        mode = Mode.MAIN_MENU;
         frame = new Frame();
         frame.setVisible(true);
         FrameControl.centerFrame(frame);
-        
-        mode = Mode.MAIN_MENU;
     }
     
     // ++++ ++++ Accessors ++++ ++++
