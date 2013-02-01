@@ -64,6 +64,5 @@ public class Frame extends JFrame {
         setResizable(false);
         setIconImage(new ImageIcon("res\\textures\\PlayerTank.png").getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1280, 720);
     }
 }

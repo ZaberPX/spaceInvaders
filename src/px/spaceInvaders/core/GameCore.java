@@ -28,13 +28,17 @@ public class GameCore {
      * @param args Command-line Arguments */
     public static void main(String[] args) {
         instance = new GameCore();
+        instance.init();
     }
     
     // ++++ ++++ Initialization ++++ ++++
     
     /**Private constructor is only called by main() method. */
     private GameCore() {
-        mode = Mode.MAIN_MENU;
+    	mode = Mode.MAIN_MENU;
+    }
+    
+    protected void init() {
         frame = new Frame();
         frame.setVisible(true);
         FrameControl.centerFrame(frame);
